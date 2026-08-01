@@ -1,0 +1,15 @@
+{
+  "name": "heavy-market",
+  "version": "1.0.0",
+  "description": "Маркетплейс грузовой и коммерческой техники",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "server": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "json-server": "^0.17.4"
+  }
+}
