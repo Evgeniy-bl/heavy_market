@@ -1,0 +1,111 @@
+/* Full-page preloader */
+
+html.is-preload {
+  overflow: hidden;
+}
+
+html.is-preload body {
+  overflow: hidden;
+}
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-page-bg, #f9f9f9);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.28s ease, visibility 0.28s ease;
+}
+
+.preloader.is-hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.preloader__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  padding: 24px;
+  text-align: center;
+}
+
+.preloader__logo {
+  font-family: var(--font-logo, 'IBM Plex Sans', system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 40px;
+  line-height: 1;
+  color: var(--color-accent, #009661);
+  letter-spacing: 0.02em;
+  animation: preloader-logo-in 0.5s ease both;
+}
+
+.preloader__spinner {
+  position: relative;
+  width: 44px;
+  height: 44px;
+}
+
+.preloader__spinner::before,
+.preloader__spinner::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 2px solid transparent;
+}
+
+.preloader__spinner::before {
+  border-top-color: var(--color-accent, #009661);
+  border-right-color: rgba(0, 150, 97, 0.25);
+  animation: preloader-spin 0.85s linear infinite;
+}
+
+.preloader__spinner::after {
+  inset: 8px;
+  border-bottom-color: var(--color-accent, #009661);
+  border-left-color: rgba(0, 150, 97, 0.2);
+  animation: preloader-spin 1.25s linear infinite reverse;
+}
+
+.preloader__text {
+  margin: 0;
+  font-family: var(--font-main, 'Manrope', system-ui, sans-serif);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary, #8b959e);
+}
+
+@keyframes preloader-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes preloader-logo-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .preloader,
+  .preloader__logo,
+  .preloader__spinner::before,
+  .preloader__spinner::after {
+    animation: none;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+  }
+}
