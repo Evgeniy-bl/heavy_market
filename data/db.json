@@ -2,15 +2,25 @@
   "categories": [
     {
       "id": "transport",
-      "types": ["trucks", "vans", "buses"]
+      "types": [
+        "trucks",
+        "vans",
+        "buses"
+      ]
     },
     {
       "id": "agriculture",
-      "types": ["tractors", "motoblocks"]
+      "types": [
+        "tractors",
+        "motoblocks"
+      ]
     },
     {
       "id": "construction",
-      "types": ["loaders", "cranes"]
+      "types": [
+        "loaders",
+        "cranes"
+      ]
     }
   ],
   "sellers": [
@@ -18,7 +28,6 @@
       "id": 1,
       "name": "МАЗ-Центр Минск",
       "city": "Минск",
-      "country": "Беларусь",
       "logo": "assets/db-images/seller-logo-1-529132.png",
       "description": "Официальный дилер МАЗ и Нёман",
       "phone": "+375 17 388-55-00"
@@ -27,7 +36,6 @@
       "id": 2,
       "name": "БелАЗ-Техника",
       "city": "Жодино",
-      "country": "Беларусь",
       "logo": "assets/db-images/seller-logo-1-529132.png",
       "description": "Продажа карьерных самосвалов БелАЗ",
       "phone": "+375 1775 5-55-55"
@@ -36,7 +44,6 @@
       "id": 3,
       "name": "АгроБел",
       "city": "Могилёв",
-      "country": "Беларусь",
       "logo": "assets/db-images/seller-logo-1-529132.png",
       "description": "Сельхозтехника МТЗ, Гомсельмаш, Бобруйскагромаш",
       "phone": "+375 33 987-65-43"
@@ -45,7 +52,6 @@
       "id": 4,
       "name": "Амкодор-Сервис",
       "city": "Минск",
-      "country": "Беларусь",
       "logo": "assets/db-images/seller-logo-1-529132.png",
       "description": "Погрузочная и дорожно-строительная техника Амкодор",
       "phone": "+375 17 279-88-99"
@@ -54,7 +60,6 @@
       "id": 5,
       "name": "МЗКТ-Волат",
       "city": "Минск",
-      "country": "Беларусь",
       "logo": "assets/db-images/seller-logo-1-529132.png",
       "description": "Тяжёлые шасси и тягачи МЗКТ",
       "phone": "+375 17 311-22-33"
@@ -63,7 +68,6 @@
       "id": 6,
       "name": "СпецТехГомель",
       "city": "Гомель",
-      "country": "Беларусь",
       "logo": "assets/db-images/seller-logo-1-529132.png",
       "description": "Автокраны и спецтехника на шасси МАЗ",
       "phone": "+375 232 55-44-66"
@@ -82,13 +86,19 @@
       "mileage": 210000,
       "payload": 22,
       "power": 420,
-      "country": "Беларусь",
       "city": "Минск",
-      "images": ["assets/db-images/product-2.png"],
+      "images": [
+        "assets/db-images/product-2.png",
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png"
+      ],
       "sellerId": 1,
       "description": "Седельный тягач с двигателем ЯМЗ-536, спальное место, Евро-5.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Московский",
+      "publishedAt": "2026-08-23T08:12:00.000Z"
     },
     {
       "id": 2,
@@ -102,13 +112,19 @@
       "mileage": 165000,
       "payload": 24,
       "power": 480,
-      "country": "Беларусь",
       "city": "Борисов",
-      "images": ["assets/db-images/product-1-1fc7c0.png"],
+      "images": [
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-2.png"
+      ],
       "sellerId": 1,
       "description": "Магистральный тягач повышенной мощности, автоматическая КПП.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Заднепровский",
+      "publishedAt": "2026-08-23T03:34:00.000Z"
     },
     {
       "id": 3,
@@ -122,13 +138,19 @@
       "mileage": 98000,
       "payload": 30,
       "power": 420,
-      "country": "Беларусь",
       "city": "Минск",
-      "images": ["assets/db-images/product-3.png"],
+      "images": [
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-2.png"
+      ],
       "sellerId": 5,
       "description": "Тягач повышенной проходимости на шасси МЗКТ-7429, для тяжёлых условий.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Советский",
+      "publishedAt": "2026-08-22T15:45:00.000Z"
     },
     {
       "id": 4,
@@ -142,13 +164,19 @@
       "mileage": 175000,
       "payload": 20,
       "power": 330,
-      "country": "Беларусь",
       "city": "Гродно",
-      "images": ["assets/db-images/product-2.png"],
+      "images": [
+        "assets/db-images/product-2.png",
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png"
+      ],
       "sellerId": 1,
       "description": "Самосвал с кузовом 16 м³, гидроподъёмник, усиленная рама.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Ленинский",
+      "publishedAt": "2026-08-22T07:56:00.000Z"
     },
     {
       "id": 5,
@@ -162,13 +190,19 @@
       "mileage": 52000,
       "payload": 90,
       "power": 850,
-      "country": "Беларусь",
       "city": "Жодино",
-      "images": ["assets/db-images/product-1-1fc7c0.png"],
+      "images": [
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-2.png"
+      ],
       "sellerId": 2,
       "description": "Карьерный самосвал грузоподъёмностью 90 т для горных работ.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Центр",
+      "publishedAt": "2026-08-21T23:08:00.000Z"
     },
     {
       "id": 6,
@@ -182,13 +216,19 @@
       "mileage": 48000,
       "payload": 45,
       "power": 850,
-      "country": "Беларусь",
       "city": "Солигорск",
-      "images": ["assets/db-images/product-3.png"],
+      "images": [
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-2.png"
+      ],
       "sellerId": 2,
       "description": "Карьерный самосвал 45 т, двигатель Cummins, КПП Allison.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Центр",
+      "publishedAt": "2026-08-21T09:17:00.000Z"
     },
     {
       "id": 7,
@@ -202,13 +242,19 @@
       "mileage": 145000,
       "payload": 8,
       "power": 240,
-      "country": "Беларусь",
       "city": "Минск",
-      "images": ["assets/db-images/product-3.png"],
+      "images": [
+        "assets/db-images/product-3.png",
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-2.png",
+        "assets/db-images/deal-of-day-766bc9.png"
+      ],
       "sellerId": 1,
       "description": "Бортовой грузовик с кузовом 6,2 м, гидроборт в комплекте.",
       "isTop": true,
-      "isDealOfDay": true
+      "isDealOfDay": true,
+      "district": "Московский",
+      "publishedAt": "2026-08-20T11:29:00.000Z"
     },
     {
       "id": 8,
@@ -222,13 +268,19 @@
       "mileage": 198000,
       "payload": 10,
       "power": 260,
-      "country": "Беларусь",
       "city": "Бобруйск",
-      "images": ["assets/db-images/product-2.png"],
+      "images": [
+        "assets/db-images/product-2.png",
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-1-1fc7c0.png"
+      ],
       "sellerId": 1,
       "description": "Бортовой грузовик с тентом и обрешёткой, грузоподъёмность 10 т.",
       "isTop": false,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Первомайский",
+      "publishedAt": "2026-08-19T11:41:00.000Z"
     },
     {
       "id": 9,
@@ -242,13 +294,19 @@
       "mileage": 112000,
       "payload": 7,
       "power": 240,
-      "country": "Беларусь",
       "city": "Брест",
-      "images": ["assets/db-images/deal-of-day-766bc9.png"],
+      "images": [
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-3.png",
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-2.png"
+      ],
       "sellerId": 1,
       "description": "Изотермический фургон-рефрижератор, рабочая температура −20 °C.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Московский",
+      "publishedAt": "2026-08-18T11:53:00.000Z"
     },
     {
       "id": 10,
@@ -262,13 +320,19 @@
       "mileage": 156000,
       "payload": 5,
       "power": 130,
-      "country": "Беларусь",
       "city": "Витебск",
-      "images": ["assets/db-images/product-1-1fc7c0.png"],
+      "images": [
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-2.png",
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png"
+      ],
       "sellerId": 1,
       "description": "Закрытый промтоварный фургон, боковая дверь, полки в кузове.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Первомайский",
+      "publishedAt": "2026-08-17T05:05:00.000Z"
     },
     {
       "id": 11,
@@ -282,13 +346,19 @@
       "mileage": 98000,
       "seats": 38,
       "power": 220,
-      "country": "Беларусь",
       "city": "Минск",
-      "images": ["assets/db-images/product-1-1fc7c0.png"],
+      "images": [
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-2.png"
+      ],
       "sellerId": 1,
       "description": "Городской низкопольный автобус, 38 мест, кондиционер, пандус.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Фрунзенский",
+      "publishedAt": "2026-08-23T08:12:00.000Z"
     },
     {
       "id": 12,
@@ -302,13 +372,19 @@
       "mileage": 72000,
       "seats": 32,
       "power": 200,
-      "country": "Беларусь",
       "city": "Гомель",
-      "images": ["assets/db-images/product-2.png"],
+      "images": [
+        "assets/db-images/product-2.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-3.png"
+      ],
       "sellerId": 1,
       "description": "Городской автобус среднего класса, 32 места, низкий пол.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Центральный",
+      "publishedAt": "2026-08-23T03:34:00.000Z"
     },
     {
       "id": 13,
@@ -322,13 +398,19 @@
       "mileage": 72000,
       "seats": 45,
       "power": 280,
-      "country": "Беларусь",
       "city": "Барановичи",
-      "images": ["assets/db-images/product-2.png"],
+      "images": [
+        "assets/db-images/product-2.png",
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png"
+      ],
       "sellerId": 1,
       "description": "Междугородный автобус повышенной комфортности, 45 мест.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Центр",
+      "publishedAt": "2026-08-22T15:45:00.000Z"
     },
     {
       "id": 14,
@@ -342,13 +424,19 @@
       "mileage": 45000,
       "seats": 49,
       "power": 300,
-      "country": "Беларусь",
       "city": "Лида",
-      "images": ["assets/db-images/product-3.png"],
+      "images": [
+        "assets/db-images/product-3.png",
+        "assets/db-images/product-2.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-1-1fc7c0.png"
+      ],
       "sellerId": 1,
       "description": "Междугородный автобус с туалетом и кондиционером, 49 мест.",
       "isTop": false,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Центр",
+      "publishedAt": "2026-08-22T07:56:00.000Z"
     },
     {
       "id": 15,
@@ -361,13 +449,19 @@
       "year": 2021,
       "engineHours": 1200,
       "power": 81,
-      "country": "Беларусь",
       "city": "Могилёв",
-      "images": ["assets/db-images/product-3.png"],
+      "images": [
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-2.png"
+      ],
       "sellerId": 3,
       "description": "Универсальный колёсный трактор, полный привод, кабина с отопителем.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Ленинский",
+      "publishedAt": "2026-08-21T23:08:00.000Z"
     },
     {
       "id": 16,
@@ -380,13 +474,19 @@
       "year": 2019,
       "engineHours": 2800,
       "power": 130,
-      "country": "Беларусь",
       "city": "Горки",
-      "images": ["assets/db-images/product-1-1fc7c0.png"],
+      "images": [
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-2.png",
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png"
+      ],
       "sellerId": 3,
       "description": "Трактор повышенной мощности для полевых и транспортных работ.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Центр",
+      "publishedAt": "2026-08-21T09:17:00.000Z"
     },
     {
       "id": 17,
@@ -399,13 +499,19 @@
       "year": 2018,
       "engineHours": 4500,
       "power": 400,
-      "country": "Беларусь",
       "city": "Пинск",
-      "images": ["assets/db-images/product-2.png"],
+      "images": [
+        "assets/db-images/product-2.png",
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-1-1fc7c0.png"
+      ],
       "sellerId": 3,
       "description": "Колёсно-цепной трактор для крупных сельхозпредприятий.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Центр",
+      "publishedAt": "2026-08-20T11:29:00.000Z"
     },
     {
       "id": 18,
@@ -418,13 +524,19 @@
       "year": 2020,
       "engineHours": 1900,
       "power": 230,
-      "country": "Беларусь",
       "city": "Гомель",
-      "images": ["assets/db-images/product-1-1fc7c0.png"],
+      "images": [
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-2.png",
+        "assets/db-images/product-3.png"
+      ],
       "sellerId": 3,
       "description": "Зерноуборочный комбайн, ширина захвата 6 м, бункер 6000 л.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Центральный",
+      "publishedAt": "2026-08-19T11:41:00.000Z"
     },
     {
       "id": 19,
@@ -437,13 +549,19 @@
       "year": 2019,
       "engineHours": 2200,
       "power": 180,
-      "country": "Беларусь",
       "city": "Могилёв",
-      "images": ["assets/db-images/product-3.png"],
+      "images": [
+        "assets/db-images/product-3.png",
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-2.png",
+        "assets/db-images/deal-of-day-766bc9.png"
+      ],
       "sellerId": 3,
       "description": "Сельхозтехника для послеуборочной обработки зерна.",
       "isTop": false,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Ленинский",
+      "publishedAt": "2026-08-18T11:53:00.000Z"
     },
     {
       "id": 20,
@@ -456,13 +574,19 @@
       "year": 2022,
       "engineHours": 450,
       "power": 130,
-      "country": "Беларусь",
       "city": "Бобруйск",
-      "images": ["assets/db-images/product-2.png"],
+      "images": [
+        "assets/db-images/product-2.png",
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-1-1fc7c0.png"
+      ],
       "sellerId": 3,
       "description": "Оборотный плуг для обработки почвы, 6 корпусов, усиленная рама.",
       "isTop": false,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Первомайский",
+      "publishedAt": "2026-08-17T05:05:00.000Z"
     },
     {
       "id": 21,
@@ -475,13 +599,19 @@
       "year": 2022,
       "engineHours": 120,
       "power": 9,
-      "country": "Беларусь",
       "city": "Слуцк",
-      "images": ["assets/db-images/product-2.png"],
+      "images": [
+        "assets/db-images/product-2.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-3.png"
+      ],
       "sellerId": 3,
       "description": "Мотоблок для приусадебных хозяйств, фреза в комплекте.",
       "isTop": false,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Центр",
+      "publishedAt": "2026-08-23T08:12:00.000Z"
     },
     {
       "id": 22,
@@ -496,13 +626,19 @@
       "engineVolume": 4.4,
       "bucketVolume": 1.2,
       "power": 125,
-      "country": "Беларусь",
       "city": "Минск",
-      "images": ["assets/db-images/product-2.png"],
+      "images": [
+        "assets/db-images/product-2.png",
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png"
+      ],
       "sellerId": 4,
       "description": "Фронтальный погрузчик, ковш 1,2 м³, гидравлика высокой производительности.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Первомайский",
+      "publishedAt": "2026-08-23T03:34:00.000Z"
     },
     {
       "id": 23,
@@ -514,16 +650,22 @@
       "price": 58000,
       "year": 2017,
       "engineHours": 6800,
-      "engineVolume": 4.0,
-      "bucketVolume": 1.0,
+      "engineVolume": 4,
+      "bucketVolume": 1,
       "power": 110,
-      "country": "Беларусь",
       "city": "Брест",
-      "images": ["assets/db-images/product-3.png"],
+      "images": [
+        "assets/db-images/product-3.png",
+        "assets/db-images/product-2.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-1-1fc7c0.png"
+      ],
       "sellerId": 4,
       "description": "Универсальный фронтальный погрузчик для строительных площадок.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Московский",
+      "publishedAt": "2026-08-22T15:45:00.000Z"
     },
     {
       "id": 24,
@@ -536,15 +678,21 @@
       "year": 2016,
       "engineHours": 5900,
       "engineVolume": 4.4,
-      "bucketVolume": 1.0,
+      "bucketVolume": 1,
       "power": 150,
-      "country": "Беларусь",
       "city": "Гродно",
-      "images": ["assets/db-images/product-1-1fc7c0.png"],
+      "images": [
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-2.png",
+        "assets/db-images/product-3.png"
+      ],
       "sellerId": 4,
       "description": "Экскаватор-погрузчик для дорожных и коммунальных работ.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Ленинский",
+      "publishedAt": "2026-08-22T07:56:00.000Z"
     },
     {
       "id": 25,
@@ -560,13 +708,19 @@
       "payload": 25,
       "boomReach": 28,
       "power": 240,
-      "country": "Беларусь",
       "city": "Жодино",
-      "images": ["assets/db-images/product-1-1fc7c0.png"],
+      "images": [
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-2.png",
+        "assets/db-images/product-3.png",
+        "assets/db-images/deal-of-day-766bc9.png"
+      ],
       "sellerId": 6,
       "description": "Автокран на шасси МАЗ, грузоподъёмность 25 т, вылет стрелы 28 м.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Центр",
+      "publishedAt": "2026-08-21T23:08:00.000Z"
     },
     {
       "id": 26,
@@ -582,13 +736,19 @@
       "payload": 32,
       "boomReach": 31,
       "power": 280,
-      "country": "Беларусь",
       "city": "Гомель",
-      "images": ["assets/db-images/product-3.png"],
+      "images": [
+        "assets/db-images/product-3.png",
+        "assets/db-images/product-2.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-1-1fc7c0.png"
+      ],
       "sellerId": 6,
       "description": "Автокран повышенной грузоподъёмности на шасси МАЗ-6312.",
       "isTop": true,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Центральный",
+      "publishedAt": "2026-08-21T09:17:00.000Z"
     },
     {
       "id": 27,
@@ -604,13 +764,19 @@
       "payload": 16,
       "boomReach": 18,
       "power": 180,
-      "country": "Беларусь",
       "city": "Витебск",
-      "images": ["assets/db-images/product-2.png"],
+      "images": [
+        "assets/db-images/product-2.png",
+        "assets/db-images/deal-of-day-766bc9.png",
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-3.png"
+      ],
       "sellerId": 6,
       "description": "Компактный автокран для городских строительных работ.",
       "isTop": false,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Октябрьский",
+      "publishedAt": "2026-08-20T11:29:00.000Z"
     },
     {
       "id": 28,
@@ -624,14 +790,159 @@
       "mileage": 85000,
       "payload": 15,
       "power": 330,
-      "country": "Беларусь",
       "city": "Минск",
-      "images": ["assets/db-images/product-3.png"],
+      "images": [
+        "assets/db-images/product-3.png",
+        "assets/db-images/product-1-1fc7c0.png",
+        "assets/db-images/product-2.png",
+        "assets/db-images/deal-of-day-766bc9.png"
+      ],
       "sellerId": 5,
       "description": "Тяжёлый бортовой грузовик повышенной проходимости, 8×8.",
       "isTop": false,
-      "isDealOfDay": false
+      "isDealOfDay": false,
+      "district": "Первомайский",
+      "publishedAt": "2026-08-19T11:41:00.000Z"
     }
   ],
-  "carts": []
+  "carts": [],
+  "users": [
+    {
+      "id": 1,
+      "firstName": "Админ",
+      "lastName": "Heavy",
+      "patronymic": null,
+      "birthDate": "1990-01-01",
+      "phone": "375291234567",
+      "email": "admin@heavy.by",
+      "nickname": "admin_heavy",
+      "password": "Admin@123",
+      "role": "admin",
+      "createdAt": "2026-01-01T00:00:00.000Z",
+      "favorites": [],
+      "bookings": []
+    },
+    {
+      "id": 2,
+      "firstName": "Иван",
+      "lastName": "Покупатель",
+      "patronymic": null,
+      "birthDate": "1995-05-15",
+      "phone": "375297654321",
+      "email": "user@example.by",
+      "nickname": "ivan_renter",
+      "password": "User@123",
+      "role": "renter",
+      "createdAt": "2026-02-01T10:00:00.000Z",
+      "favorites": [],
+      "bookings": []
+    },
+    {
+      "id": 3,
+      "firstName": "Пётр",
+      "lastName": "Продавец",
+      "patronymic": null,
+      "birthDate": "1988-03-20",
+      "phone": "375331112233",
+      "email": "seller@example.by",
+      "nickname": "petr_landlord",
+      "password": "User@123",
+      "role": "landlord",
+      "createdAt": "2026-02-15T12:00:00.000Z",
+      "favorites": [],
+      "bookings": []
+    }
+  ],
+  "messages": [
+    {
+      "id": 1,
+      "userId": 2,
+      "contactName": "Игорь Игорьевич",
+      "productId": 1,
+      "productTitle": "SCHWARZMUELLER 3Achs Stahlaufbau Kipper",
+      "unreadCount": 4,
+      "sentAt": "2026-08-23T19:56:00.000Z"
+    },
+    {
+      "id": 2,
+      "userId": 2,
+      "contactName": "Darrell Steward",
+      "productId": 2,
+      "productTitle": "Opel Movano B Pritsche L3H1 3,5t",
+      "unreadCount": 2,
+      "sentAt": "2026-08-18T19:05:00.000Z"
+    },
+    {
+      "id": 3,
+      "userId": 2,
+      "contactName": "Игорь Игорьевич",
+      "productId": 1,
+      "productTitle": "SCHWARZMUELLER 3Achs Stahlaufbau Kipper",
+      "unreadCount": 2,
+      "sentAt": "2026-08-18T19:05:00.000Z"
+    },
+    {
+      "id": 4,
+      "userId": 2,
+      "contactName": "Albert Flores",
+      "productId": 2,
+      "productTitle": "Opel Movano B Pritsche L3H1 3,5t",
+      "unreadCount": 2,
+      "sentAt": "2026-08-18T19:05:00.000Z"
+    },
+    {
+      "id": 5,
+      "userId": 2,
+      "contactName": "Robert Fox",
+      "productId": 1,
+      "productTitle": "SCHWARZMUELLER 3Achs Stahlaufbau Kipper",
+      "unreadCount": 0,
+      "sentAt": "2026-08-22T16:45:00.000Z"
+    },
+    {
+      "id": 6,
+      "userId": 2,
+      "contactName": "Arlene McCoy",
+      "productId": 2,
+      "productTitle": "Opel Movano B Pritsche L3H1 3,5t",
+      "unreadCount": 0,
+      "sentAt": "2026-08-21T12:50:00.000Z"
+    },
+    {
+      "id": 7,
+      "userId": 2,
+      "contactName": "Cody Fisher",
+      "productId": 2,
+      "productTitle": "Opel Movano B Pritsche L3H1 3,5t",
+      "unreadCount": 0,
+      "sentAt": "2026-08-18T20:30:00.000Z"
+    },
+    {
+      "id": 8,
+      "userId": 2,
+      "contactName": "Kristin Watson",
+      "productId": 2,
+      "productTitle": "Opel Movano B Pritsche L3H1 3,5t",
+      "unreadCount": 1,
+      "sentAt": "2026-08-18T20:30:00.000Z"
+    },
+    {
+      "id": 9,
+      "userId": 2,
+      "contactName": "Devon Lane",
+      "productId": 1,
+      "productTitle": "SCHWARZMUELLER 3Achs Stahlaufbau Kipper",
+      "unreadCount": 0,
+      "sentAt": "2026-08-18T20:30:00.000Z"
+    },
+    {
+      "id": 10,
+      "userId": 2,
+      "contactName": "Darrell Steward",
+      "productId": 2,
+      "productTitle": "Opel Movano B Pritsche L3H1 3,5t",
+      "unreadCount": 0,
+      "sentAt": "2026-08-18T20:30:00.000Z"
+    }
+  ]
 }
