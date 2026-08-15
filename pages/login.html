@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru" class="is-preload">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Вход — Heavy Market</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/auth.css">
+</head>
+<body class="auth-page" data-page="login">
+
+  <header class="header header--auth">
+    <div class="container header__inner">
+      <a href="../index.html" class="header__logo">HEAVY</a>
+      <a href="register.html" class="header__auth-link" data-i18n="auth.login.noAccount">Нет аккаунта? Регистрация</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="auth-section">
+      <div class="container">
+        <div class="auth-card auth-card--login">
+          <div class="auth-card__header">
+            <h1 class="auth-card__title" data-i18n="auth.login.title">Вход</h1>
+            <p class="auth-card__subtitle" data-i18n="auth.login.subtitle">Войдите, чтобы сохранять избранное и связаться с продавцами</p>
+          </div>
+
+          <form id="loginForm" class="auth-form" novalidate>
+            <div class="form-group">
+              <label class="form-label" for="loginIdentifier" data-i18n="auth.login.identifier">Email или телефон</label>
+              <input class="form-field__control" type="text" id="loginIdentifier" name="identifier" required autocomplete="username" placeholder="Email или +375 (29) 000-00-00">
+              <span class="form-error" data-error="identifier"></span>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="loginPassword" data-i18n="auth.login.password">Пароль</label>
+              <div class="password-input-wrapper">
+                <input class="form-field__control" type="password" id="loginPassword" name="password" required autocomplete="current-password">
+                <button type="button" class="password-toggle" data-password-toggle aria-pressed="false" data-i18n="auth.showPassword">Показать</button>
+              </div>
+              <span class="form-error" data-error="password"></span>
+            </div>
+
+            <div class="form-options">
+              <label class="checkbox-option">
+                <input type="checkbox" id="rememberMe" name="rememberMe">
+                <span data-i18n="auth.login.remember">Запомнить меня</span>
+              </label>
+              <a href="#" class="form-link" data-i18n="auth.login.forgotPassword">Забыли пароль?</a>
+            </div>
+
+            <button type="submit" id="loginSubmit" class="btn btn--primary btn--lg btn--full" data-i18n="auth.login.submit">Войти</button>
+          </form>
+
+          <div class="auth-card__footer">
+            <span data-i18n="auth.login.noAccountShort">Нет аккаунта?</span>
+            <a href="register.html" data-i18n="auth.register.submit">Зарегистрироваться</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer footer--auth">
+    <div class="container">
+      <div class="footer__bottom">
+        <p data-i18n="footer.copy">© 2019–2026 Группа компаний «Heavy Market»</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="modal" data-modal="login-error" hidden aria-hidden="true">
+    <div class="modal__backdrop" data-modal-close></div>
+    <section class="modal__dialog">
+      <button class="modal__close" type="button" data-modal-close aria-label="×">×</button>
+      <h2 class="modal__title" data-i18n="auth.login.errorTitle">Не удалось войти</h2>
+      <p class="modal__message" data-login-error-text data-i18n="auth.login.errorText">Неверный email, телефон или пароль</p>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--primary" data-modal-close data-i18n="common.close">Закрыть</button>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="../js/common/i18n.js"></script>
+  <script type="module" src="../js/auth/login.js"></script>
+</body>
+</html>
