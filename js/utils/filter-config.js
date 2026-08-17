@@ -4,7 +4,7 @@ const COMMON_FILTERS = [
   { type: 'select', field: 'brand', labelKey: 'filter.brand', dynamic: 'brands' },
   { type: 'select', field: 'model', labelKey: 'filter.model', dynamic: 'models', dependsOn: 'brand' },
   { type: 'select', field: 'yearFrom', labelKey: 'filter.yearFrom', dynamic: 'years' },
-  { type: 'number', field: 'priceTo', labelKey: 'filter.priceTo' }
+  { type: 'price-range', field: 'price', labelKey: 'filter.price' }
 ];
 
 const CATEGORY_FILTERS = {

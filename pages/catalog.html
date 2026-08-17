@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ru" class="is-preload">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Каталог — Heavy Market</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/preloader.css">
+  <link rel="stylesheet" href="../css/pages/catalog.css">
+</head>
+<body data-page="catalog">
+
+  <div id="preloader" class="preloader" role="status" aria-live="polite" aria-busy="true">
+    <div class="preloader__inner">
+      <div class="preloader__logo" aria-hidden="true">HEAVY</div>
+      <div class="preloader__spinner" aria-hidden="true"></div>
+      <p class="preloader__text">Загрузка...</p>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="container header__inner">
+      <a href="../index.html" class="header__logo">HEAVY</a>
+      <nav class="header__nav">
+        <div class="lang-dropdown" data-lang-dropdown>
+          <button type="button" class="lang-dropdown__toggle" aria-expanded="false" aria-haspopup="listbox" data-i18n-aria="header.langAria">
+            <img class="lang-dropdown__icon" src="../assets/icons/globe.svg" alt="" width="20" height="20" aria-hidden="true">
+            <span class="lang-dropdown__current" data-lang-current>RU</span>
+          </button>
+          <div class="lang-dropdown__panel" hidden role="listbox">
+            <button type="button" class="lang-dropdown__option lang-dropdown__option--active" data-lang="ru" role="option" aria-pressed="true">RU</button>
+            <button type="button" class="lang-dropdown__option" data-lang="be" role="option" aria-pressed="false">BE</button>
+            <button type="button" class="lang-dropdown__option" data-lang="en" role="option" aria-pressed="false">EN</button>
+          </div>
+        </div>
+        <a href="catalog.html" class="header__link" data-i18n="header.catalog">Каталог</a>
+        <a href="catalog.html" class="header__link" data-i18n="header.search">Поиск</a>
+        <a href="#" class="header__link header__link--accent" data-user-menu data-i18n="header.profile">Мой профиль</a>
+      </nav>
+      <div class="header__actions">
+        <a href="seller.html" class="btn btn--secondary" data-i18n="header.becomeSeller">Стать продавцом</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="catalog-page">
+    <div class="container" id="catalog-root"></div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__grid">
+        <div>
+          <p class="footer__brand-name">HEAVY</p>
+          <p class="footer__brand-desc" data-i18n="footer.brandDesc">Маркетплейс коммерческого транспорта и тяжёлой техники</p>
+        </div>
+        <div class="footer__col">
+          <p class="footer__col-title" data-i18n="footer.buyer">Покупателю</p>
+          <div class="footer__links-row">
+            <a href="#" class="footer__link" data-i18n="footer.support">Служба поддержки</a>
+            <a href="seller.html" class="footer__link" data-i18n="footer.seller">Стать продавцом</a>
+          </div>
+        </div>
+        <div>
+          <p class="footer__col-title" data-i18n="footer.follow">Следите за нами</p>
+          <div class="footer__socials">
+            <a href="#" aria-label="Facebook"><img src="../assets/icons/facebook.svg" alt="" width="32" height="32"></a>
+            <a href="#" aria-label="Instagram"><img src="../assets/icons/instagram.svg" alt="" width="32" height="32"></a>
+            <a href="#" aria-label="YouTube"><img src="../assets/icons/youtube.svg" alt="" width="32" height="32"></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p data-i18n="footer.copy">© 2019–2026 Группа компаний «Heavy Market»</p>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="../js/main.js"></script>
+  <script type="module" src="../js/pages/catalog.js"></script>
+</body>
+</html>
