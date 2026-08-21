@@ -29,16 +29,3 @@ const CITY_TO_REGION = {
 export function getRegionByCity(city) {
   return CITY_TO_REGION[city] || null;
 }
-
-export function getAvailableRegions(products) {
-  const available = new Set();
-
-  products.forEach((product) => {
-    const region = getRegionByCity(product.city);
-    if (region) {
-      available.add(region);
-    }
-  });
-
-  return BELARUS_REGIONS.filter((region) => available.has(region));
-}

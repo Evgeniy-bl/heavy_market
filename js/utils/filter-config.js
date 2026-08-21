@@ -43,9 +43,10 @@ export const CATEGORY_TYPES = {
   construction: ['loaders', 'cranes']
 };
 
-export function getFilters(category, type) {
+export function getFilters(category, type, options = {}) {
+  const { includeTypeFilters = true } = options;
   const typeKey = `${category}_${type}`;
-  const typeExtra = TYPE_FILTERS[typeKey] ?? [];
+  const typeExtra = includeTypeFilters ? (TYPE_FILTERS[typeKey] ?? []) : [];
 
   return [
     ...COMMON_FILTERS,

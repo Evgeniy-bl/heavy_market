@@ -33,9 +33,43 @@ export const API = {
     return fetchJSON(`${baseURL}/messages?userId=${encodeURIComponent(userId)}&_sort=sentAt&_order=desc`);
   },
 
+  createMessage(data) {
+    return fetchJSON(`${baseURL}/messages`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  },
+
+  updateMessage(id, data) {
+    return fetchJSON(`${baseURL}/messages/${encodeURIComponent(id)}`, {
+      method: 'PATCH',
+      body: JSON.stringify(data)
+    });
+  },
+
   deleteMessages(ids) {
     return Promise.all(
       ids.map((id) => fetchJSON(`${baseURL}/messages/${encodeURIComponent(id)}`, { method: 'DELETE' }))
+    );
+  },
+
+  getChatMessages(conversationId) {
+    return fetchJSON(
+      `${baseURL}/chatMessages?conversationId=${encodeURIComponent(conversationId)}&_sort=sentAt&_order=asc`
+    );
+  },
+
+  createChatMessage(data) {
+    return fetchJSON(`${baseURL}/chatMessages`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    });
+  },
+
+  async deleteChatMessagesByConversation(conversationId) {
+    const items = await this.getChatMessages(conversationId);
+    await Promise.all(
+      items.map((item) => fetchJSON(`${baseURL}/chatMessages/${encodeURIComponent(item.id)}`, { method: 'DELETE' }))
     );
   }
 };
