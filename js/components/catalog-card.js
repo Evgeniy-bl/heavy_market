@@ -1,4 +1,5 @@
 import { formatPrice, t } from '../common/i18n.js';
+import { renderFavoriteButtonHtml } from './favorite-button.js';
 
 const SLIDE_INTERVAL = 900;
 
@@ -87,16 +88,18 @@ function bindCardGallery(card) {
   });
 }
 
-export function createCatalogCard(product, sellersMap = {}, basePath = '') {
+export function createCatalogCard(product, sellersMap = {}, basePath = '', options = {}) {
   const seller = sellersMap[product.sellerId];
   const locationText = product.city || seller?.city || '';
   const sellerName = seller?.name || '';
   const chips = getMetaChips(product);
   const images = product.images?.length ? product.images : [''];
   const hasGallery = images.length > 1;
+  const favoriteIds = options.favoriteIds || [];
 
   const article = document.createElement('article');
   article.className = 'catalog-card';
+  article.dataset.productId = String(product.id);
   article.innerHTML = `
     <a href="${basePath}pages/product.html?id=${product.id}" class="catalog-card__link">
       <div class="catalog-card__image-wrap" data-card-gallery data-slides="${images.length}">
@@ -112,6 +115,7 @@ export function createCatalogCard(product, sellersMap = {}, basePath = '') {
             `).join('')}
           </div>
         ` : ''}
+        ${renderFavoriteButtonHtml(product.id, favoriteIds)}
       </div>
       <div class="catalog-card__body">
         <p class="catalog-card__type">${t(`types.${product.type}`)}</p>
@@ -137,11 +141,11 @@ export function createCatalogCard(product, sellersMap = {}, basePath = '') {
   return article;
 }
 
-export function renderCatalogCards(container, products, sellers = [], basePath = '') {
+export function renderCatalogCards(container, products, sellers = [], basePath = '', options = {}) {
   const sellersMap = Object.fromEntries(sellers.map((s) => [s.id, s]));
   container.innerHTML = '';
 
   products.forEach((product) => {
-    container.appendChild(createCatalogCard(product, sellersMap, basePath));
+    container.appendChild(createCatalogCard(product, sellersMap, basePath, options));
   });
 }
