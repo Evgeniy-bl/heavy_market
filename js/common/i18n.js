@@ -80,6 +80,14 @@ const i18n = {
         document.title = this.t('page.cartTitle');
       } else if (page === 'seller') {
         document.title = this.t('page.sellerTitle');
+      } else if (page === 'profile') {
+        document.title = this.t('page.profileTitle');
+      } else if (page === 'messages') {
+        document.title = this.t('page.messagesTitle');
+      } else if (page === 'favorites') {
+        document.title = this.t('page.favoritesTitle');
+      } else if (page === 'about') {
+        document.title = this.t('page.aboutTitle');
       }
     }
   },

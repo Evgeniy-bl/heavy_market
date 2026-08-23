@@ -9,6 +9,7 @@ import {
   resolveAuthPath
 } from '../auth/session.js';
 import { formatPhoneInput, phoneToDigits, validateEmailField, validatePasswordField } from '../auth/validation.js';
+import { refreshMessagesTabBadge } from '../utils/messages-badge.js';
 import Modal from '../components/modal.js';
 
 let currentUser = null;
@@ -71,6 +72,7 @@ async function loadProfile() {
 
   currentUser = await API.getUserById(session.id);
   fillForm(currentUser);
+  await refreshMessagesTabBadge(currentUser.id);
   return currentUser;
 }
 

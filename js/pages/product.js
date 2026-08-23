@@ -4,10 +4,16 @@ import { markContentReady } from '../common/preloader.js';
 import { withState } from '../components/load-states.js';
 import { renderProductCards } from '../components/product-card.js';
 import { getOverviewSpecs, getQuickStats, formatProductAddress, formatPublishedAt } from '../utils/product-specs.js';
+import { buildSellerCatalogUrl } from '../utils/catalog-url.js';
+import { isFavorite, loadFavoriteIds, toggleFavorite } from '../utils/favorites.js';
+import { openOrCreateSellerConversation } from '../utils/conversations.js';
+import { renderHeartSvg } from '../components/favorite-button.js';
 import Modal from '../components/modal.js';
 import { requireAuth } from '../auth/require-auth.js';
+import { getCurrentUser } from '../auth/session.js';
 
 const BASE = '../';
+let favoriteIds = [];
 
 function getProductId() {
   return new URLSearchParams(window.location.search).get('id');
@@ -84,6 +90,7 @@ function renderSummary(product, seller) {
   const sellerName = seller?.name || '';
   const phone = seller?.phone || '';
   const telHref = toTelHref(phone);
+  const active = isFavorite(favoriteIds, product.id);
   return `
     <aside class="product-summary">
       <div class="product-summary__card">
@@ -92,10 +99,15 @@ function renderSummary(product, seller) {
             <h1 class="product-summary__title">${product.name}</h1>
             <p class="product-summary__type">${t(`types.${product.type}`)}</p>
           </div>
-          <button type="button" class="product-summary__fav" aria-label="${t('product.favorite')}" data-favorite>
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" aria-hidden="true">
-              <path d="M16 27s-9.5-5.8-12.7-10.6C1.1 13.4 2.4 9 6.2 8c2.2-.6 4.5.3 5.8 2.1C13.3 8.3 15.6 7.4 17.8 8c3.8 1 5.1 5.4 2.9 8.4C25.5 21.2 16 27 16 27z" stroke="currentColor" stroke-width="1.8" fill="none"/>
-            </svg>
+          <button
+            type="button"
+            class="product-summary__fav${active ? ' is-active' : ''}"
+            aria-label="${t(active ? 'favorites.remove' : 'favorites.add')}"
+            aria-pressed="${active ? 'true' : 'false'}"
+            data-favorite
+            data-product-id="${product.id}"
+          >
+            ${renderHeartSvg(32)}
           </button>
         </div>
         ${renderQuickStats(product)}
@@ -186,22 +198,50 @@ function bindProductEvents(product, seller) {
     event.currentTarget.textContent = collapsed ? t('product.showMore') : t('product.showLess');
   });
 
-  root.querySelector('[data-contact-seller]')?.addEventListener('click', () => {
-    const phone = seller?.phone || '';
-    const name = seller?.name || '';
-    Modal.open({
-      type: 'info',
-      title: t('product.contactSeller'),
-      message: phone
-        ? `${name}\n${phone}`
-        : t('product.contactUnavailable'),
-      closeLabel: t('common.close')
-    });
+  root.querySelector('[data-contact-seller]')?.addEventListener('click', async (event) => {
+    const user = requireAuth('messages.authRequired');
+    if (!user) return;
+
+    if (!seller?.id) {
+      Modal.open({
+        type: 'info',
+        title: t('product.contactSeller'),
+        message: t('product.contactUnavailable'),
+        closeLabel: t('common.close')
+      });
+      return;
+    }
+
+    const button = event.currentTarget;
+    button.disabled = true;
+    try {
+      const conversation = await openOrCreateSellerConversation({
+        userId: user.id,
+        product,
+        seller
+      });
+      window.location.href = `messages.html?id=${encodeURIComponent(conversation.id)}`;
+    } catch {
+      Modal.showError(t('messages.openError'));
+      button.disabled = false;
+    }
   });
 
-  root.querySelector('[data-favorite]')?.addEventListener('click', (event) => {
+  root.querySelector('[data-favorite]')?.addEventListener('click', async (event) => {
     if (!requireAuth('favorites.authRequired')) return;
-    event.currentTarget.classList.toggle('is-active');
+
+    const button = event.currentTarget;
+    button.disabled = true;
+    try {
+      const result = await toggleFavorite(button.dataset.productId);
+      if (!result.ok) return;
+      favoriteIds = result.favoriteIds;
+      button.classList.toggle('is-active', result.active);
+      button.setAttribute('aria-pressed', result.active ? 'true' : 'false');
+      button.setAttribute('aria-label', t(result.active ? 'favorites.remove' : 'favorites.add'));
+    } finally {
+      button.disabled = false;
+    }
   });
 }
 
@@ -211,10 +251,14 @@ async function fetchProductPageData() {
     throw new Error('Product id is missing');
   }
 
-  const [product, sellers] = await Promise.all([
+  const session = getCurrentUser();
+  const [product, sellers, favorites] = await Promise.all([
     api.getProductById(id),
-    api.getSellers()
+    api.getSellers(),
+    session?.id ? loadFavoriteIds(session.id) : Promise.resolve([])
   ]);
+
+  favoriteIds = favorites;
 
   const seller = sellers.find((item) => item.id === product.sellerId);
   const allProducts = await api.getProducts({

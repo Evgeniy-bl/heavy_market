@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Настройки профиля — Heavy Market</title>
+  <title>Сообщения — Heavy Market</title>
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/preloader.css">
   <link rel="stylesheet" href="../css/pages/profile.css">
+  <link rel="stylesheet" href="../css/pages/messages.css">
 </head>
-<body data-page="profile">
+<body data-page="messages">
 
   <div id="preloader" class="preloader" role="status" aria-live="polite" aria-busy="true">
     <div class="preloader__inner">
@@ -46,7 +47,7 @@
     </div>
   </header>
 
-  <main class="profile-page">
+  <main class="profile-page messages-page">
     <section class="profile-hero">
       <div class="container profile-hero__inner">
         <nav class="breadcrumbs profile-hero__breadcrumbs" aria-label="breadcrumb">
@@ -54,19 +55,19 @@
           <span class="breadcrumbs__sep" aria-hidden="true"></span>
           <span class="breadcrumbs__item" data-i18n="profile.cabinet">Мой кабинет</span>
           <span class="breadcrumbs__sep" aria-hidden="true"></span>
-          <span class="breadcrumbs__item breadcrumbs__item--current" data-i18n="profile.settingsTitle">Настройки профиля</span>
+          <span class="breadcrumbs__item breadcrumbs__item--current" data-i18n="messages.title">Сообщения</span>
         </nav>
-        <h1 class="profile-hero__title" data-i18n="profile.settingsTitle">Настройки профиля</h1>
+        <h1 class="profile-hero__title" data-i18n="messages.title">Сообщения</h1>
 
         <nav class="profile-tabs" aria-label="Разделы кабинета">
           <a href="favorites.html" class="profile-tabs__link" data-i18n="profile.favorites">Избранное</a>
-          <a href="messages.html" class="profile-tabs__link profile-tabs__link--messages">
+          <a href="messages.html" class="profile-tabs__link profile-tabs__link--messages is-active" aria-current="page">
             <span data-i18n="profile.messages">Сообщения</span>
             <span class="profile-tabs__badge" data-messages-badge hidden>
               (<span class="profile-tabs__badge-full" data-messages-badge-full></span><span class="profile-tabs__badge-short" data-messages-badge-short></span>)
             </span>
           </a>
-          <a href="profile.html" class="profile-tabs__link profile-tabs__link--settings is-active" aria-current="page" data-i18n-aria="profile.settingsTitle">
+          <a href="profile.html" class="profile-tabs__link profile-tabs__link--settings" data-i18n-aria="profile.settingsTitle">
             <img class="profile-tabs__icon" src="../assets/icons/settings.svg" alt="" width="24" height="24" aria-hidden="true">
             <span class="profile-tabs__settings-full" data-i18n="profile.settingsTitle">Настройки профиля</span>
             <span class="profile-tabs__settings-short" data-i18n="profile.settingsShort">Настройки</span>
@@ -75,81 +76,74 @@
       </div>
     </section>
 
-    <div class="container">
-      <div class="profile-head">
-        <h2 class="profile-head__title"></h2>
-        <button type="button" class="profile-head__logout" data-profile-logout data-i18n="profile.logout">Выйти из аккаунта</button>
+    <div class="container messages-page__content">
+      <div class="messenger" data-messenger>
+        <aside class="messenger-sidebar">
+          <div class="messenger-sidebar__head">
+            <h2 class="messenger-sidebar__title" data-i18n="messages.title">Сообщения</h2>
+            <button type="button" class="messenger-sidebar__select" data-select-mode data-i18n="messages.select">Выбрать</button>
+          </div>
+
+          <div class="messenger-sidebar__actions" data-select-actions hidden>
+            <button type="button" class="messages-delete" data-messages-delete disabled>
+              <img class="messages-delete__icon" src="../assets/icons/trash.svg" alt="" width="20" height="20" aria-hidden="true">
+              <span data-i18n="messages.delete">Удалить</span>
+            </button>
+            <button type="button" class="messenger-sidebar__cancel" data-select-cancel data-i18n="common.cancel">Отмена</button>
+          </div>
+
+          <div class="messenger-list" id="messenger-list" role="list"></div>
+        </aside>
+
+        <section class="messenger-main" data-messenger-main>
+          <div class="messenger-empty" data-chat-empty>
+            <h3 class="messenger-empty__title" data-i18n="messages.pickChat">Выберите чат для общения</h3>
+            <p class="messenger-empty__text" data-i18n="messages.pickChatHint">В списке слева все ваши активные чаты</p>
+          </div>
+
+          <div class="chat-panel" data-chat-panel hidden>
+            <div class="chat-panel__header">
+              <button type="button" class="chat-panel__back" data-chat-back data-i18n-aria="messages.backFromChat" aria-label="Назад к списку">
+                <img src="../assets/icons/chevron-left.svg" alt="" width="24" height="24" aria-hidden="true">
+              </button>
+              <div class="chat-panel__person">
+                <div class="chat-avatar chat-avatar--lg" data-chat-avatar aria-hidden="true"></div>
+                <div>
+                  <p class="chat-panel__contact" data-chat-contact></p>
+                  <p class="chat-panel__status" data-chat-status data-i18n="messages.wasOnline">был(а) недавно</p>
+                </div>
+              </div>
+              <button type="button" class="chat-panel__menu" data-chat-menu aria-label="Меню">
+                <img src="../assets/icons/more-vertical.svg" alt="" width="24" height="24" aria-hidden="true">
+              </button>
+            </div>
+
+            <a class="chat-product" data-chat-product href="#">
+              <img class="chat-product__image" data-chat-product-image src="" alt="" width="48" height="48">
+              <span class="chat-product__title" data-chat-product-title></span>
+              <span class="chat-product__price" data-chat-product-price></span>
+            </a>
+            <a class="chat-seller-link" data-chat-seller-link href="#" hidden data-i18n="product.viewSellerAds">Смотреть все позиции продавца</a>
+
+            <div class="chat-panel__body" data-chat-body></div>
+
+            <form class="chat-panel__composer" data-chat-form>
+              <label class="visually-hidden" for="chat-input" data-i18n="messages.placeholder">Напишите сообщение</label>
+              <textarea
+                id="chat-input"
+                class="chat-panel__input"
+                rows="1"
+                data-chat-input
+                data-i18n-placeholder="messages.placeholder"
+                placeholder="Напишите сообщение"
+              ></textarea>
+              <button type="submit" class="chat-panel__send" data-chat-send aria-label="Отправить">
+                <img src="../assets/icons/send-plane.svg" alt="" width="24" height="24" aria-hidden="true">
+              </button>
+            </form>
+          </div>
+        </section>
       </div>
-
-      <section class="profile-card is-open" aria-labelledby="profile-account-title">
-        <button type="button" class="profile-card__toggle" data-profile-toggle aria-expanded="true">
-          <h2 class="profile-card__title" id="profile-account-title" data-i18n="profile.accountSettings">Настройки аккаунта</h2>
-          <span class="profile-card__chevron-wrap" aria-hidden="true">
-            <img class="profile-card__chevron" src="../assets/icons/chevron-down.svg" alt="" width="16" height="8">
-          </span>
-        </button>
-        <div class="profile-card__body">
-          <div class="profile-email-current">
-            <span class="profile-email-current__label" data-i18n="profile.currentEmail">Ваш E-mail адрес:</span>
-            <span class="profile-email-current__value" id="profile-current-email"></span>
-          </div>
-
-          <div class="profile-panels">
-            <div class="profile-panel">
-              <p class="profile-field__subheading" data-i18n="profile.changeEmail">Изменить E-mail адрес</p>
-              <div class="profile-field">
-                <label class="profile-field__label" for="profile-email-input" data-i18n="profile.newEmail">Введите новый E-mail адрес</label>
-                <input class="profile-field__control" type="email" id="profile-email-input" autocomplete="email">
-              </div>
-              <button type="button" class="btn btn--primary profile-card__save" data-save-email data-i18n="profile.save">Сохранить</button>
-            </div>
-            <div class="profile-panel">
-              <p class="profile-field__subheading" data-i18n="profile.changePassword">Изменить пароль</p>
-              <div class="profile-field">
-                <label class="profile-field__label" for="profile-password-input" data-i18n="profile.newPassword">Введите новый пароль</label>
-                <input class="profile-field__control" type="password" id="profile-password-input" autocomplete="new-password">
-              </div>
-              <div class="profile-panel__actions">
-                <button type="button" class="btn btn--primary profile-card__save" data-save-password data-i18n="profile.save">Сохранить</button>
-                <button type="button" class="profile-card__link" data-i18n="auth.login.forgotPassword">Забыли пароль?</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="profile-card is-open" aria-labelledby="profile-contact-title">
-        <button type="button" class="profile-card__toggle" data-profile-toggle aria-expanded="true">
-          <h2 class="profile-card__title" id="profile-contact-title" data-i18n="profile.contactInfo">Изменить контактную информацию</h2>
-          <span class="profile-card__chevron-wrap" aria-hidden="true">
-            <img class="profile-card__chevron" src="../assets/icons/chevron-down.svg" alt="" width="16" height="8">
-          </span>
-        </button>
-        <div class="profile-card__body">
-          <p class="profile-card__hint" data-i18n="profile.contactHint">Здесь вы можете изменить личные данные, которые видят продавцы при обращении.</p>
-
-          <div class="profile-panel profile-panel--contact">
-            <div class="profile-fields-grid profile-fields-grid--contact">
-              <div class="profile-field">
-                <label class="profile-field__label" for="profile-first-name" data-i18n="auth.register.firstName">Имя</label>
-                <input class="profile-field__control" type="text" id="profile-first-name" autocomplete="given-name">
-              </div>
-              <div class="profile-field">
-                <label class="profile-field__label" for="profile-last-name" data-i18n="auth.register.lastName">Фамилия</label>
-                <input class="profile-field__control" type="text" id="profile-last-name" autocomplete="family-name">
-              </div>
-              <div class="profile-field">
-                <label class="profile-field__label" for="profile-phone" data-i18n="auth.register.phone">Телефон</label>
-                <input class="profile-field__control" type="tel" id="profile-phone" autocomplete="tel">
-              </div>
-            </div>
-
-            <div class="profile-card__actions">
-              <button type="button" class="btn btn--primary profile-card__save" data-save-contact data-i18n="profile.saveChanges">Сохранить изменения</button>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   </main>
 
@@ -184,6 +178,6 @@
   </footer>
 
   <script type="module" src="../js/main.js"></script>
-  <script type="module" src="../js/pages/profile.js"></script>
+  <script type="module" src="../js/pages/messages.js"></script>
 </body>
 </html>

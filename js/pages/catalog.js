@@ -1,10 +1,15 @@
 import { api } from '../utils/api.js';
 import { getFilters, CATEGORY_TYPES } from '../utils/filter-config.js';
-import { getAvailableRegions, getRegionByCity } from '../utils/belarus-regions.js';
+import { BELARUS_REGIONS, getRegionByCity } from '../utils/belarus-regions.js';
 import { t, getLang } from '../common/i18n.js';
 import { markContentReady } from '../common/preloader.js';
 import { withState } from '../components/load-states.js';
 import { renderCatalogCards } from '../components/catalog-card.js';
+import { matchesProductQuery } from '../utils/product-search.js';
+import { loadFavoriteIds } from '../utils/favorites.js';
+import { bindFavoriteToggles } from '../components/favorite-button.js';
+import { mountPagination } from '../components/pagination.js';
+import { getCurrentUser } from '../auth/session.js';
 
 const BASE = '../';
 const PAGE_SIZE = 6;
@@ -30,6 +35,8 @@ let openSections = new Set(['type', 'price', 'brand', 'region']);
 let priceBounds = { min: 0, max: 0 };
 let searchTimer = null;
 let priceTimer = null;
+let favoriteIds = [];
+let unbindFavorites = null;
 
 function uniqueValues(products, field) {
   return [...new Set(products.map((p) => p[field]).filter(Boolean))].sort();
@@ -56,6 +63,31 @@ function buildSelectOptions(values, anyLabel, labelFn = (value) => value, select
     options.push(`<option value="${value}"${isSelected}>${labelFn(value)}</option>`);
   });
   return options.join('');
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+function getActiveSeller() {
+  const sellerId = appliedFilters.sellerId;
+  if (!sellerId) return null;
+  return allSellers.find((seller) => String(seller.id) === String(sellerId)) || null;
+}
+
+function countSellerProducts(sellerId) {
+  return allProducts.filter((product) => String(product.sellerId) === String(sellerId)).length;
+}
+
+function preserveSellerFilter() {
+  const sellerId = appliedFilters.sellerId;
+  appliedFilters = {};
+  if (sellerId) appliedFilters.sellerId = sellerId;
 }
 
 function formatNumber(value) {
@@ -407,15 +439,7 @@ function matchesFilters(product) {
   if (bucketVolumeFrom && Number(product.bucketVolume) < Number(bucketVolumeFrom)) return false;
   if (boomReachFrom && Number(product.boomReach) < Number(boomReachFrom)) return false;
   if (region && getRegionByCity(product.city) !== region) return false;
-
-  if (q) {
-    const query = String(q).trim().toLowerCase();
-    const haystack = [product.name, product.brand, product.model]
-      .filter(Boolean)
-      .join(' ')
-      .toLowerCase();
-    if (!haystack.includes(query)) return false;
-  }
+  if (!matchesProductQuery(product, q)) return false;
 
   return true;
 }
@@ -436,11 +460,57 @@ function sortProducts(products) {
   }
 }
 
+function updateBreadcrumbs() {
+  const crumb = document.querySelector('.breadcrumbs__item--current');
+  if (!crumb) return;
+
+  const seller = getActiveSeller();
+  crumb.textContent = seller ? seller.name : t(`categories.${activeCategory}`);
+}
+
+function renderSellerBanner() {
+  const banner = document.getElementById('catalog-seller-banner');
+  if (!banner) return;
+
+  const seller = getActiveSeller();
+  if (!seller) {
+    banner.hidden = true;
+    banner.innerHTML = '';
+    return;
+  }
+
+  const total = countSellerProducts(seller.id);
+  const listingsLabel = t('catalog.sellerListings').replace('{count}', String(total));
+
+  banner.hidden = false;
+  banner.innerHTML = `
+    <div class="catalog-seller-banner__inner">
+      <img class="catalog-seller-banner__logo" src="${BASE}${escapeHtml(seller.logo)}" alt="" width="56" height="56" loading="lazy">
+      <div class="catalog-seller-banner__info">
+        <p class="catalog-seller-banner__title">${escapeHtml(seller.name)}</p>
+        <p class="catalog-seller-banner__meta">${escapeHtml(seller.city)} · ${escapeHtml(listingsLabel)}</p>
+      </div>
+      <button
+        type="button"
+        class="catalog-seller-banner__clear"
+        data-seller-clear
+        aria-label="${escapeHtml(t('catalog.sellerBannerClear'))}"
+      >
+        <span aria-hidden="true">×</span>
+      </button>
+    </div>
+  `;
+
+  banner.querySelector('[data-seller-clear]')?.addEventListener('click', () => clearFilterChip('sellerId'));
+}
+
 function applyFiltersAndRender() {
   filteredProducts = sortProducts(allProducts.filter(matchesFilters));
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / PAGE_SIZE));
   if (currentPage > totalPages) currentPage = totalPages;
   writeUrlState();
+  renderSellerBanner();
+  updateBreadcrumbs();
   renderResults();
   renderSidebarActiveFilters();
   updateFiltersBadge();
@@ -619,6 +689,15 @@ function getAppliedFilterChips() {
     });
   }
 
+  const seller = getActiveSeller();
+  if (seller) {
+    chips.push({
+      key: 'sellerId',
+      label: t('catalog.sellerFilter'),
+      value: seller.name
+    });
+  }
+
   Object.entries(appliedFilters).forEach(([key, value]) => {
     if (['type', 'sellerId', 'q', 'priceFrom', 'priceTo'].includes(key) || !value) return;
     const filter = getFilters(activeCategory, activeType).find((item) => item.field === key);
@@ -763,7 +842,7 @@ function renderFilterControl(filter, draft, products) {
     control = `<select class="form-field__control" name="type" id="catalog-filter-type">${opts}</select>`;
     isSelect = true;
   } else if (filter.dynamic === 'regions') {
-    control = `<select class="form-field__control" name="region" id="catalog-filter-region">${buildSelectOptions(getAvailableRegions(products), t('common.any'), (id) => t(`regions.${id}`), selected)}</select>`;
+    control = `<select class="form-field__control" name="region" id="catalog-filter-region">${buildSelectOptions(BELARUS_REGIONS, t('common.any'), (id) => t(`regions.${id}`), selected)}</select>`;
     isSelect = true;
   } else if (filter.dynamic === 'brands') {
     control = `<select class="form-field__control" name="brand" id="catalog-filter-brand">${buildSelectOptions(uniqueValues(products, 'brand'), t('common.any'), (v) => v, selected)}</select>`;
@@ -852,6 +931,7 @@ function bindLiveFilters(root) {
 }
 
 function commitFiltersFromForm() {
+  const sellerId = appliedFilters.sellerId;
   const draft = readFormDraft();
   const searchInput = document.getElementById('catalog-search');
   if (searchInput) {
@@ -867,6 +947,7 @@ function commitFiltersFromForm() {
 
   appliedFilters = { ...draft };
   delete appliedFilters.type;
+  if (sellerId) appliedFilters.sellerId = sellerId;
   currentPage = 1;
   applyFiltersAndRender();
 }
@@ -939,36 +1020,21 @@ function renderResults() {
     return;
   }
 
-  renderCatalogCards(grid, pageItems, allSellers, BASE);
+  renderCatalogCards(grid, pageItems, allSellers, BASE, { favoriteIds });
 
   if (!pagination) return;
 
-  pagination.innerHTML = `
-    <div class="catalog-pagination__nav">
-      <button type="button" class="catalog-pagination__btn" data-page-prev aria-label="${t('catalog.prev')}" ${currentPage <= 1 ? 'disabled' : ''}>
-        <img src="${BASE}assets/icons/arrow-prev.svg" alt="" width="20" height="20">
-      </button>
-      <span class="catalog-pagination__status">${currentPage} / ${totalPages}</span>
-      <button type="button" class="catalog-pagination__btn" data-page-next aria-label="${t('catalog.next')}" ${currentPage >= totalPages ? 'disabled' : ''}>
-        <img src="${BASE}assets/icons/arrow-next.svg" alt="" width="20" height="20">
-      </button>
-    </div>
-  `;
-
-  pagination.querySelector('[data-page-prev]')?.addEventListener('click', () => {
-    if (currentPage <= 1) return;
-    currentPage -= 1;
-    writeUrlState();
-    renderResults();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
-
-  pagination.querySelector('[data-page-next]')?.addEventListener('click', () => {
-    if (currentPage >= totalPages) return;
-    currentPage += 1;
-    writeUrlState();
-    renderResults();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  mountPagination(pagination, {
+    page: currentPage,
+    totalPages,
+    prevLabel: t('catalog.prev'),
+    nextLabel: t('catalog.next'),
+    onPageChange: (nextPage) => {
+      currentPage = nextPage;
+      writeUrlState();
+      renderResults();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   });
 }
 
@@ -988,6 +1054,8 @@ function renderPageShell() {
         <button type="button" class="catalog-tabs__btn" role="tab" data-category-tab="construction">${t('categories.construction')}</button>
       </div>
     </div>
+
+    <div id="catalog-seller-banner" class="catalog-seller-banner" hidden></div>
 
     <div class="catalog-page__layout">
       <div class="catalog-filters-backdrop" data-filters-backdrop></div>
@@ -1065,15 +1133,13 @@ function renderPageShell() {
       activeCategory = tab.dataset.categoryTab;
       activeType = (CATEGORY_TYPES[activeCategory] || [])[0] || '';
       draftType = activeType;
-      appliedFilters = {};
+      preserveSellerFilter();
       currentPage = 1;
       const searchInput = document.getElementById('catalog-search');
       if (searchInput) searchInput.value = '';
       closeFiltersDrawer();
       renderFilterFields();
       applyFiltersAndRender();
-      const crumb = document.querySelector('.breadcrumbs__item--current');
-      if (crumb) crumb.textContent = t(`categories.${activeCategory}`);
     });
   });
 
@@ -1090,12 +1156,15 @@ function renderPageShell() {
 }
 
 async function fetchCatalogData() {
-  const [products, sellers] = await Promise.all([
+  const session = getCurrentUser();
+  const [products, sellers, favorites] = await Promise.all([
     api.getProducts(),
-    api.getSellers()
+    api.getSellers(),
+    session?.id ? loadFavoriteIds(session.id) : Promise.resolve([])
   ]);
   allProducts = products;
   allSellers = sellers;
+  favoriteIds = favorites;
   return { products, sellers };
 }
 
@@ -1106,6 +1175,13 @@ function renderCatalog() {
   applyFiltersAndRender();
   syncSidebarHeight();
   scheduleSidebarHeightSync();
+
+  unbindFavorites?.();
+  unbindFavorites = bindFavoriteToggles(document.getElementById('catalog-root'), {
+    onChange: (result) => {
+      favoriteIds = result.favoriteIds;
+    }
+  });
 }
 
 async function init() {

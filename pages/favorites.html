@@ -3,15 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Каталог — Heavy Market</title>
+  <title>Избранное — Heavy Market</title>
   <link rel="stylesheet" href="../css/variables.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/preloader.css">
+  <link rel="stylesheet" href="../css/pages/profile.css">
   <link rel="stylesheet" href="../css/pages/catalog.css">
+  <link rel="stylesheet" href="../css/pages/favorites.css">
 </head>
-<body data-page="catalog">
+<body data-page="favorites">
 
   <div id="preloader" class="preloader" role="status" aria-live="polite" aria-busy="true">
     <div class="preloader__inner">
@@ -38,7 +40,7 @@
         </div>
         <a href="catalog.html" class="header__link" data-i18n="header.catalog">Каталог</a>
         <a href="about.html" class="header__link" data-i18n="header.about">Контакты</a>
-        <a href="#" class="header__link header__link--accent" data-user-menu data-i18n="header.profile">Мой профиль</a>
+        <a href="profile.html" class="header__link header__link--accent" data-user-menu data-i18n="header.profile">Мой профиль</a>
       </nav>
       <div class="header__actions">
         <a href="seller.html" class="btn btn--secondary" data-i18n="header.becomeSeller">Стать продавцом</a>
@@ -46,8 +48,53 @@
     </div>
   </header>
 
-  <main class="catalog-page">
-    <div class="container" id="catalog-root"></div>
+  <main class="profile-page favorites-page">
+    <section class="profile-hero">
+      <div class="container profile-hero__inner">
+        <nav class="breadcrumbs profile-hero__breadcrumbs" aria-label="breadcrumb">
+          <a href="../index.html" class="breadcrumbs__item" data-i18n="product.home">Главная</a>
+          <span class="breadcrumbs__sep" aria-hidden="true"></span>
+          <span class="breadcrumbs__item" data-i18n="profile.cabinet">Мой кабинет</span>
+          <span class="breadcrumbs__sep" aria-hidden="true"></span>
+          <span class="breadcrumbs__item breadcrumbs__item--current" data-i18n="favorites.title">Избранное</span>
+        </nav>
+        <h1 class="profile-hero__title" data-i18n="favorites.title">Избранное</h1>
+
+        <nav class="profile-tabs" aria-label="Разделы кабинета">
+          <a href="favorites.html" class="profile-tabs__link is-active" aria-current="page" data-i18n="profile.favorites">Избранное</a>
+          <a href="messages.html" class="profile-tabs__link profile-tabs__link--messages">
+            <span data-i18n="profile.messages">Сообщения</span>
+            <span class="profile-tabs__badge" data-messages-badge hidden>
+              (<span class="profile-tabs__badge-full" data-messages-badge-full></span><span class="profile-tabs__badge-short" data-messages-badge-short></span>)
+            </span>
+          </a>
+          <a href="profile.html" class="profile-tabs__link profile-tabs__link--settings" data-i18n-aria="profile.settingsTitle">
+            <img class="profile-tabs__icon" src="../assets/icons/settings.svg" alt="" width="24" height="24" aria-hidden="true">
+            <span class="profile-tabs__settings-full" data-i18n="profile.settingsTitle">Настройки профиля</span>
+            <span class="profile-tabs__settings-short" data-i18n="profile.settingsShort">Настройки</span>
+          </a>
+        </nav>
+      </div>
+    </section>
+
+    <div class="container favorites-page__content">
+      <div class="favorites-search catalog-results__search">
+        <label class="visually-hidden" for="favorites-search" data-i18n="favorites.search">Поиск по объявлениям</label>
+        <span class="catalog-search__icon" aria-hidden="true"></span>
+        <input
+          class="catalog-search__input"
+          type="search"
+          id="favorites-search"
+          data-i18n-placeholder="favorites.search"
+          placeholder="Поиск по объявлениям"
+          autocomplete="off"
+        >
+      </div>
+
+      <div id="favorites-grid" class="favorites-grid catalog-results__grid" role="list"></div>
+      <div id="favorites-pagination" class="favorites-pagination"></div>
+      <p id="favorites-empty" class="favorites-empty" hidden data-i18n="favorites.empty">В избранном пока ничего нет</p>
+    </div>
   </main>
 
   <footer class="footer">
@@ -81,6 +128,6 @@
   </footer>
 
   <script type="module" src="../js/main.js"></script>
-  <script type="module" src="../js/pages/catalog.js"></script>
+  <script type="module" src="../js/pages/favorites.js"></script>
 </body>
 </html>
