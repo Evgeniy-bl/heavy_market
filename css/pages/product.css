@@ -140,8 +140,12 @@
 
 .product-summary__fav:hover,
 .product-summary__fav.is-active {
-  color: var(--color-red);
-  background: rgba(235, 87, 87, 0.08);
+  color: var(--color-accent);
+  background: var(--color-accent-soft-bg);
+}
+
+.product-summary__fav.is-active path {
+  fill: currentColor;
 }
 
 .product-summary__fav:active {

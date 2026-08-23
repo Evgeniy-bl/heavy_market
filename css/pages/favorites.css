@@ -1,0 +1,40 @@
+.favorites-page__content {
+  padding: 32px 0 80px;
+}
+
+.favorites-search {
+  width: 100%;
+  margin-bottom: 24px;
+}
+
+.favorites-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.favorites-empty {
+  margin: 48px 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--fs-md);
+  font-weight: 500;
+  text-align: center;
+}
+
+.favorites-pagination .pagination {
+  margin-top: 32px;
+}
+
+@media (max-width: 1100px) {
+  .favorites-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .favorites-page__content {
+    padding: 24px 0 56px;
+  }
+
+  .favorites-grid {
+    grid-template-columns: 1fr;
+  }
+}

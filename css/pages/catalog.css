@@ -76,6 +76,72 @@ a.breadcrumbs__item:hover {
   font-weight: 700;
 }
 
+.catalog-seller-banner {
+  margin-bottom: 24px;
+}
+
+.catalog-seller-banner__inner {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: var(--color-white);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.catalog-seller-banner__logo {
+  flex-shrink: 0;
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  background: var(--color-bg-soft, #f3f5f7);
+}
+
+.catalog-seller-banner__info {
+  flex: 1;
+  min-width: 0;
+}
+
+.catalog-seller-banner__title {
+  margin: 0;
+  color: var(--color-text-main);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.catalog-seller-banner__meta {
+  margin: 4px 0 0;
+  color: var(--color-text-secondary);
+  font-size: var(--fs-sm);
+  line-height: var(--lh-sm);
+}
+
+.catalog-seller-banner__clear {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.catalog-seller-banner__clear:hover {
+  background: var(--color-accent-soft-bg);
+  color: var(--color-accent);
+}
+
 .catalog-page__layout {
   display: grid;
   grid-template-columns: 289px minmax(0, 1fr);
@@ -1012,48 +1078,11 @@ body:has(.header.is-hidden) .catalog-sidebar {
 }
 
 .catalog-pagination {
+  margin-top: 0;
+}
+
+.catalog-pagination .pagination {
   margin-top: 40px;
-}
-
-.catalog-pagination__nav {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-}
-
-.catalog-pagination__btn {
-  width: 48px;
-  height: 48px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: var(--radius-sm);
-  background: var(--color-accent-soft-bg);
-  cursor: pointer;
-  transition: background-color 0.2s ease, transform 0.15s ease, opacity 0.2s ease;
-}
-
-.catalog-pagination__btn:hover:not(:disabled) {
-  background: rgba(70, 137, 102, 0.14);
-}
-
-.catalog-pagination__btn:active:not(:disabled) {
-  transform: scale(0.96);
-}
-
-.catalog-pagination__btn:disabled {
-  opacity: 0.35;
-  cursor: default;
-}
-
-.catalog-pagination__status {
-  color: var(--color-text-main);
-  font-size: 16px;
-  font-weight: 500;
-  min-width: 64px;
-  text-align: center;
 }
 
 .catalog-empty {
