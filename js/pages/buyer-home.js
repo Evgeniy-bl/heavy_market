@@ -1,24 +1,20 @@
 import { api } from '../utils/api.js';
 import { getFilters, CATEGORY_TYPES } from '../utils/filter-config.js';
-import { getAvailableRegions } from '../utils/belarus-regions.js';
-import { t, formatPrice } from '../common/i18n.js';
+import { t } from '../common/i18n.js';
 import { markContentReady } from '../common/preloader.js';
 import { withState } from '../components/load-states.js';
 import { renderProductCards } from '../components/product-card.js';
+import { buildSellerCatalogUrl } from '../utils/catalog-url.js';
+import {
+  FEATURED_SELLERS,
+  getStaticFilterOptions
+} from '../data/static-catalog.js';
 
 let allProducts = [];
 let allSellers = [];
 let activeCategory = 'transport';
 let activeType = 'trucks';
 let homeDataPromise = null;
-
-function uniqueValues(products, field) {
-  return [...new Set(products.map((p) => p[field]).filter(Boolean))].sort();
-}
-
-function getFilteredProducts(category = activeCategory, type = activeType) {
-  return allProducts.filter((p) => p.category === category && (!type || p.type === type));
-}
 
 function buildSelectOptions(values, anyLabel, labelFn = (value) => value) {
   const options = [`<option value="">${anyLabel}</option>`];
@@ -45,12 +41,16 @@ function fetchHomeData() {
   return homeDataPromise;
 }
 
+function getFilteredProducts(category = activeCategory, type = activeType) {
+  return allProducts.filter((p) => p.category === category && (!type || p.type === type));
+}
+
 function renderFilterFields() {
   const container = document.getElementById('hero-filter-fields');
   if (!container) return;
 
-  const filters = getFilters(activeCategory, activeType);
-  const products = getFilteredProducts(activeCategory, activeType);
+  const filters = getFilters(activeCategory, activeType, { includeTypeFilters: false });
+  const staticOptions = getStaticFilterOptions(activeCategory, activeType);
 
   container.innerHTML = filters.map((filter) => {
     let control = '';
@@ -64,18 +64,19 @@ function renderFilterFields() {
       control = `<select class="form-field__control" name="type" id="filter-type">${opts}</select>`;
       isSelect = true;
     } else if (filter.dynamic === 'regions') {
-      control = `<select class="form-field__control" name="region">${buildSelectOptions(getAvailableRegions(products), t('common.any'), (id) => t(`regions.${id}`))}</select>`;
+      control = `<select class="form-field__control" name="region">${buildSelectOptions(staticOptions.regions, t('common.any'), (id) => t(`regions.${id}`))}</select>`;
       isSelect = true;
     } else if (filter.dynamic === 'brands') {
-      control = `<select class="form-field__control" name="brand">${buildSelectOptions(uniqueValues(products, 'brand'), t('common.any'))}</select>`;
+      control = `<select class="form-field__control" name="brand">${buildSelectOptions(staticOptions.brands, t('common.any'))}</select>`;
       isSelect = true;
     } else if (filter.dynamic === 'models') {
-      control = `<select class="form-field__control" name="model">${buildSelectOptions(uniqueValues(products, 'model'), t('common.any'))}</select>`;
+      control = `<select class="form-field__control" name="model">${buildSelectOptions(staticOptions.models, t('common.any'))}</select>`;
       isSelect = true;
     } else if (filter.dynamic === 'years') {
-      const years = uniqueValues(products, 'year').sort((a, b) => b - a);
-      control = `<select class="form-field__control" name="yearFrom">${buildSelectOptions(years, t('common.any'))}</select>`;
+      control = `<select class="form-field__control" name="yearFrom">${buildSelectOptions(staticOptions.years, t('common.any'))}</select>`;
       isSelect = true;
+    } else if (filter.type === 'price-range') {
+      control = `<input class="form-field__control" type="number" name="priceTo" min="0" placeholder="${t('filter.priceTo')}">`;
     } else if (filter.type === 'number') {
       control = `<input class="form-field__control" type="number" name="${filter.field}" min="0">`;
     } else {
@@ -105,11 +106,16 @@ function renderFilterFields() {
 }
 
 function updateSearchCount() {
-  const count = getFilteredProducts(activeCategory, activeType).length;
   const btn = document.getElementById('hero-search-btn');
-  if (btn) {
-    btn.textContent = `${t('hero.searchBtn')} (${count} ${t('hero.searchResults')})`;
+  if (!btn) return;
+
+  if (!allProducts.length) {
+    btn.textContent = t('hero.searchBtn');
+    return;
   }
+
+  const count = getFilteredProducts(activeCategory, activeType).length;
+  btn.textContent = `${t('hero.searchBtn')} (${count} ${t('hero.searchResults')})`;
 }
 
 function setActiveTab(category) {
@@ -126,60 +132,26 @@ function setActiveTab(category) {
   updateSearchCount();
 }
 
-function renderDealOfDay() {
-  const deal = allProducts.find((p) => p.isDealOfDay);
-  const card = document.getElementById('deal-of-day');
-
-  if (!deal || !card) {
-    card?.setAttribute('hidden', '');
-    return;
-  }
-
-  const seller = allSellers.find((s) => s.id === deal.sellerId);
-  const sellerLine = seller
-    ? `${seller.name}<br>${seller.city}`
-    : deal.city;
-
-  card.removeAttribute('hidden');
-  card.innerHTML = `
-    <a href="pages/product.html?id=${deal.id}">
-      <div class="deal-card__image-wrap">
-        <img class="deal-card__image" src="${deal.images[0]}" alt="${deal.name}" width="344" height="276" loading="lazy">
-        <div class="deal-card__badge">
-          <div class="deal-badge">
-            <span class="deal-badge__ribbon" data-i18n="deal.badge">${t('deal.badge')}</span>
-          </div>
-        </div>
-      </div>
-      <h2 class="deal-card__title">${deal.name}</h2>
-      <p class="deal-card__subtitle">${deal.description || ''}</p>
-      <div class="deal-card__seller">
-        <div class="deal-card__seller-info">
-          <img src="assets/icons/location.svg" alt="" width="32" height="32">
-          <span>${sellerLine}</span>
-        </div>
-        <p class="deal-card__price">${formatPrice(deal.price)}</p>
-      </div>
-    </a>
-  `;
-}
-
 function renderTopAds() {
   const topProducts = allProducts.filter((p) => p.isTop);
   renderProductCards(document.getElementById('top-ads-grid'), topProducts.slice(0, 8), allSellers);
 }
 
-function renderSellersLogos() {
-  const logosWrap = document.getElementById('sellers-logos');
-  if (!logosWrap) return;
+function renderSellers() {
+  const grid = document.getElementById('sellers-grid');
+  if (!grid) return;
 
-  logosWrap.innerHTML = allSellers.slice(0, 4).map((seller) =>
-    `<img class="seller-logo" src="${seller.logo}" alt="${seller.name}" loading="lazy">`
-  ).join('');
-}
-
-function renderRecent() {
-  renderProductCards(document.getElementById('recent-track'), allProducts.slice(0, 4), allSellers);
+  grid.innerHTML = FEATURED_SELLERS.map((seller) => `
+    <a
+      class="seller-tile"
+      href="${buildSellerCatalogUrl(seller.id, null, 'pages/')}"
+      role="listitem"
+    >
+      <span class="seller-tile__city">${seller.city}</span>
+      <span class="seller-tile__name">${seller.name}</span>
+      <span class="seller-tile__desc">${seller.description}</span>
+    </a>
+  `).join('');
 }
 
 function handleSearchSubmit(event) {
@@ -203,87 +175,146 @@ function initTabs() {
   });
 }
 
-function initRecentNav() {
-  const track = document.getElementById('recent-track');
-  const prev = document.querySelector('[data-recent-prev]');
-  const next = document.querySelector('[data-recent-next]');
-  if (!track) return;
+function initFaqAccordion() {
+  const list = document.querySelector('.home-faq__list');
+  if (!list) return;
 
-  const getStep = () => {
-    const card = track.querySelector('.product-card');
-    if (!card) return 309;
-    const gap = parseFloat(getComputedStyle(track).gap) || 20;
-    return card.getBoundingClientRect().width + gap;
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const duration = 400;
+
+  const closeItem = (item) => {
+    if (!item.open && !item.classList.contains('is-open')) return;
+
+    if (reduceMotion) {
+      item.open = false;
+      item.classList.remove('is-open', 'is-animating-open', 'is-animating-close');
+      return;
+    }
+
+    item.classList.add('is-open', 'is-animating-close');
+    item.classList.remove('is-animating-open');
+    item.open = true;
+
+    
+    void item.offsetHeight;
+    requestAnimationFrame(() => {
+      item.classList.remove('is-open');
+    });
+
+    window.setTimeout(() => {
+      item.open = false;
+      item.classList.remove('is-animating-close', 'is-open');
+    }, duration);
   };
 
-  let offset = 0;
+  const openItem = (item) => {
+    list.querySelectorAll('details.home-faq__item').forEach((other) => {
+      if (other !== item) closeItem(other);
+    });
 
-  const updateTransform = () => {
-    const maxOffset = Math.max(0, track.scrollWidth - track.parentElement.clientWidth);
-    offset = Math.min(offset, maxOffset);
-    track.style.transform = `translateX(-${offset}px)`;
+    if (reduceMotion) {
+      item.open = true;
+      item.classList.add('is-open');
+      return;
+    }
+
+    item.classList.remove('is-open', 'is-animating-close');
+    item.classList.add('is-animating-open');
+    item.open = true;
+
+  
+    void item.offsetHeight;
+    requestAnimationFrame(() => {
+      item.classList.add('is-open');
+    });
+
+    window.setTimeout(() => {
+      item.classList.remove('is-animating-open');
+    }, duration);
   };
 
-  next?.addEventListener('click', () => {
-    offset = Math.min(offset + getStep(), track.scrollWidth - track.parentElement.clientWidth);
-    updateTransform();
-  });
+  list.querySelectorAll('summary.home-faq__question').forEach((summary) => {
+    summary.addEventListener('click', (event) => {
+      event.preventDefault();
+      const item = summary.closest('details.home-faq__item');
+      if (!item || item.classList.contains('is-animating-close') || item.classList.contains('is-animating-open')) {
+        return;
+      }
 
-  prev?.addEventListener('click', () => {
-    offset = Math.max(offset - getStep(), 0);
-    updateTransform();
+      if (item.open || item.classList.contains('is-open')) {
+        closeItem(item);
+      } else {
+        openItem(item);
+      }
+    });
   });
-
-  window.addEventListener('resize', updateTransform);
 }
 
-async function loadHomeBlocks() {
-  const fields = document.getElementById('hero-filter-fields');
-  const deal = document.getElementById('deal-of-day');
+async function loadProductBlocks() {
   const topAds = document.getElementById('top-ads-grid');
-  const logos = document.getElementById('sellers-logos');
-  const recent = document.getElementById('recent-track');
 
-  if (deal) {
-    deal.removeAttribute('hidden');
+  await withState(topAds, fetchHomeData, () => {
+    renderTopAds();
+    updateSearchCount();
+  });
+}
+
+function initHomeReveal() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const nodes = document.querySelectorAll(
+    '.home-mission, .home-directions, .home-values, .home-faq, .home-card, .home-value, .home-stats__item, .seller-tile, .home-faq__item'
+  );
+
+  nodes.forEach((node) => {
+    node.style.opacity = '0';
+    node.style.transform = 'translateY(16px)';
+    node.style.transition = 'opacity 0.55s ease, transform 0.55s ease';
+  });
+
+  const reveal = (node) => {
+    node.style.opacity = '1';
+    node.style.transform = 'none';
+  };
+
+  if (!('IntersectionObserver' in window)) {
+    nodes.forEach(reveal);
+    return;
   }
 
-  await Promise.all([
-    withState(fields, fetchHomeData, () => {
-      setActiveTab(activeCategory);
-    }),
-    withState(deal, fetchHomeData, () => {
-      renderDealOfDay();
-    }),
-    withState(topAds, fetchHomeData, () => {
-      renderTopAds();
-    }),
-    withState(logos, fetchHomeData, () => {
-      renderSellersLogos();
-    }),
-    withState(recent, fetchHomeData, () => {
-      renderRecent();
-    })
-  ]);
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+        reveal(entry.target);
+        observer.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.12, rootMargin: '0px 0px -40px 0px' }
+  );
+
+  nodes.forEach((node) => observer.observe(node));
 }
 
 async function init() {
   initTabs();
-  initRecentNav();
+  initFaqAccordion();
+  setActiveTab(activeCategory);
+  renderSellers();
+  initHomeReveal();
+  markContentReady();
+
   document.getElementById('hero-filter-form')?.addEventListener('submit', handleSearchSubmit);
 
   document.addEventListener('languageChanged', () => {
-    if (!allProducts.length) return;
     renderFilterFields();
     updateSearchCount();
-    renderDealOfDay();
+    renderSellers();
+    if (!allProducts.length) return;
     renderTopAds();
-    renderSellersLogos();
-    renderRecent();
   });
 
-  await loadHomeBlocks();
-  markContentReady();
+  await loadProductBlocks();
 }
 
 init();

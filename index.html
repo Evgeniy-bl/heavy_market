@@ -40,7 +40,7 @@
           </div>
         </div>
         <a href="pages/catalog.html" class="header__link" data-i18n="header.catalog">Каталог</a>
-        <a href="pages/catalog.html" class="header__link" data-i18n="header.search">Поиск</a>
+        <a href="pages/about.html" class="header__link" data-i18n="header.about">Контакты</a>
         <a href="#" class="header__link header__link--accent" data-user-menu data-i18n="header.profile">Мой профиль</a>
       </nav>
 
@@ -53,28 +53,85 @@
   <main>
 
     <section class="hero-filter" aria-labelledby="hero-filter-title">
+      <div class="hero-filter__bg" aria-hidden="true"></div>
       <div class="container">
         <h1 id="hero-filter-title" class="visually-hidden">Поиск техники</h1>
-
-        <div class="hero-filter__layout">
-          <div class="hero-filter__main">
-            <div class="hero-filter__tabs-wrap">
-              <nav class="hero-filter__tabs" role="tablist" aria-label="Категории техники">
-                <button type="button" class="hero-filter__tab is-active" role="tab" aria-selected="true" data-category-tab="transport" data-i18n-cat="categories.transport">Транспорт</button>
-                <button type="button" class="hero-filter__tab" role="tab" aria-selected="false" data-category-tab="agriculture" data-i18n-cat="categories.agriculture">Сельское хозяйство</button>
-                <button type="button" class="hero-filter__tab" role="tab" aria-selected="false" data-category-tab="construction" data-i18n-cat="categories.construction">Строительство</button>
-              </nav>
-            </div>
-
-            <form class="hero-filter__form-panel" id="hero-filter-form" action="pages/catalog.html" method="get">
-              <div class="hero-filter__fields" id="hero-filter-fields"></div>
-              <div class="hero-filter__submit">
-                <button type="submit" class="btn btn--primary" id="hero-search-btn" data-i18n="hero.searchBtn">Поиск</button>
-              </div>
-            </form>
+        <div class="hero-filter__panel">
+          <div class="hero-filter__tabs-wrap">
+            <nav class="hero-filter__tabs" role="tablist" aria-label="Категории техники">
+              <button type="button" class="hero-filter__tab is-active" role="tab" aria-selected="true" data-category-tab="transport" data-i18n-cat="categories.transport">Транспорт</button>
+              <button type="button" class="hero-filter__tab" role="tab" aria-selected="false" data-category-tab="agriculture" data-i18n-cat="categories.agriculture">Сельское хозяйство</button>
+              <button type="button" class="hero-filter__tab" role="tab" aria-selected="false" data-category-tab="construction" data-i18n-cat="categories.construction">Строительство</button>
+            </nav>
           </div>
 
-          <aside class="deal-card" id="deal-of-day" aria-label="Предложение дня" hidden></aside>
+          <form class="hero-filter__form-panel" id="hero-filter-form" action="pages/catalog.html" method="get">
+            <div class="hero-filter__fields" id="hero-filter-fields"></div>
+            <div class="hero-filter__submit">
+              <button type="submit" class="btn btn--primary hero-filter__search" id="hero-search-btn" data-i18n="hero.searchBtn">Поиск</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-mission" aria-labelledby="home-mission-title">
+      <div class="container home-mission__grid">
+        <div class="home-mission__copy">
+          <p class="home-eyebrow" data-i18n="about.missionEyebrow">О компании</p>
+          <h2 class="home-section-title" id="home-mission-title" data-i18n="about.missionTitle">Площадка, где техника находит владельца</h2>
+          <p class="home-text" data-i18n="about.missionText1">Heavy Market — цифровая витрина грузовой и спецтехники. Мы помогаем быстро найти нужную машину, сравнить предложения и связаться с проверенными продавцами.</p>
+          <p class="home-text" data-i18n="about.missionText2">С 2019 года развиваем сервис для арендаторов и поставщиков: прозрачные объявления, удобный каталог и безопасная коммуникация внутри платформы.</p>
+        </div>
+        <ul class="home-stats" role="list">
+          <li class="home-stats__item">
+            <span class="home-stats__value">2019</span>
+            <span class="home-stats__label" data-i18n="about.statYear">год запуска</span>
+          </li>
+          <li class="home-stats__item">
+            <span class="home-stats__value">3</span>
+            <span class="home-stats__label" data-i18n="about.statCategories">категории техники</span>
+          </li>
+          <li class="home-stats__item">
+            <span class="home-stats__value">100%</span>
+            <span class="home-stats__label" data-i18n="about.statSellers">проверенные продавцы</span>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <section class="home-directions" aria-labelledby="home-directions-title">
+      <div class="container">
+        <header class="home-directions__head">
+          <p class="home-eyebrow" data-i18n="about.directionsEyebrow">Чем занимаемся</p>
+          <h2 class="home-section-title" id="home-directions-title" data-i18n="about.directionsTitle">Три направления — один маркетплейс</h2>
+          <p class="home-section-lead" data-i18n="about.directionsLead">Всё, что нужно бизнесу для логистики, агросезона и стройки — в одном месте.</p>
+        </header>
+        <div class="home-cards">
+          <a class="home-card" href="pages/catalog.html?category=transport">
+            <span class="home-card__icon" aria-hidden="true">
+              <img src="assets/icons/delivery-truck-trailer-svgrepo-com.svg" alt="" width="32" height="32">
+            </span>
+            <h3 class="home-card__title" data-i18n="categories.transport">Транспорт</h3>
+            <p class="home-card__text" data-i18n="about.cardTransport">Грузовики, фургоны и автобусы для перевозок и коммерческих задач.</p>
+            <span class="home-card__cta" data-i18n="section.moreAds">Больше объявлений</span>
+          </a>
+          <a class="home-card" href="pages/catalog.html?category=agriculture">
+            <span class="home-card__icon" aria-hidden="true">
+              <img src="assets/icons/tractor-svgrepo-com.svg" alt="" width="32" height="32">
+            </span>
+            <h3 class="home-card__title" data-i18n="categories.agriculture">Сельское хозяйство</h3>
+            <p class="home-card__text" data-i18n="about.cardAgro">Тракторы и мотоблоки для хозяйств и подрядных работ в поле.</p>
+            <span class="home-card__cta" data-i18n="section.moreAds">Больше объявлений</span>
+          </a>
+          <a class="home-card" href="pages/catalog.html?category=construction">
+            <span class="home-card__icon" aria-hidden="true">
+              <img src="assets/icons/building-construction-crane-svgrepo-com.svg" alt="" width="32" height="32">
+            </span>
+            <h3 class="home-card__title" data-i18n="categories.construction">Строительство</h3>
+            <p class="home-card__text" data-i18n="about.cardBuild">Погрузчики и краны для объектов любого масштаба.</p>
+            <span class="home-card__cta" data-i18n="section.moreAds">Больше объявлений</span>
+          </a>
         </div>
       </div>
     </section>
@@ -91,38 +148,131 @@
       </div>
     </section>
 
-    <section class="sellers" aria-labelledby="sellers-title">
-      <div class="sellers__panel">
-        <div class="sellers__content">
-          <h2 class="section-title" id="sellers-title" data-i18n="section.sellers">Наши продавцы</h2>
-          <p class="sellers__desc" data-i18n="section.sellersDesc">Мы работаем только с лучшими игроками на рынке. Безопасность сделки обеспечена</p>
-          <a href="pages/catalog.html" class="btn btn--primary" data-i18n="section.showAllSellers">показать всех</a>
-        </div>
-        <div class="sellers__logos" id="sellers-logos" role="list" aria-label="Логотипы продавцов">
-          <img class="sellers__hand" src="assets/icons/hand-pointer.svg" alt="" aria-hidden="true" width="40" height="40">
+    <section class="home-values" aria-labelledby="home-values-title">
+      <div class="container">
+        <header class="home-values__head">
+          <p class="home-eyebrow home-eyebrow--on-dark" data-i18n="about.valuesEyebrow">Подход</p>
+          <h2 class="home-section-title home-section-title--on-dark" id="home-values-title" data-i18n="about.valuesTitle">Как устроен Heavy Market</h2>
+        </header>
+        <div class="home-values__grid">
+          <article class="home-value">
+            <span class="home-value__icon" aria-hidden="true">
+              <img src="assets/icons/shield-check-svgrepo-com.svg" alt="" width="28" height="28">
+            </span>
+            <h3 class="home-value__title" data-i18n="about.value1Title">Честные объявления</h3>
+            <p class="home-value__text" data-i18n="about.value1Text">Цены, фото и параметры без искажений. Вы видите только то, что покупаете или арендуете.</p>
+          </article>
+          <article class="home-value">
+            <span class="home-value__icon" aria-hidden="true">
+              <img src="assets/icons/handshake-deal-svgrepo-com.svg" alt="" width="28" height="28">
+            </span>
+            <h3 class="home-value__title" data-i18n="about.value2Title">Сделки без посредников</h3>
+            <p class="home-value__text" data-i18n="about.value2Text">Удобный чат и прямые звонки. Общайтесь с владельцами техники напрямую и без переплат.</p>
+          </article>
+          <article class="home-value">
+            <span class="home-value__icon" aria-hidden="true">
+              <img src="assets/icons/hard-hat-svgrepo-com.svg" alt="" width="28" height="28">
+            </span>
+            <h3 class="home-value__title" data-i18n="about.value3Title">Заточено под спецтехнику</h3>
+            <p class="home-value__text" data-i18n="about.value3Text">Никакого легкового мусора. Профессиональные фильтры для точного поиска коммерческого транспорта.</p>
+          </article>
         </div>
       </div>
     </section>
 
-    <section class="recent" aria-labelledby="recent-title">
-      <div class="recent__inner">
-        <div class="recent__layout">
-          <div class="recent__sidebar">
-            <h2 class="section-title section-title--multiline" id="recent-title" data-i18n="section.recent">Недавно
-просмотренные</h2>
-            <div class="recent__nav">
-              <button type="button" class="recent__nav-btn recent__nav-btn--ghost" data-recent-prev aria-label="Назад">
-                <span class="recent__nav-btn__icon" aria-hidden="true"></span>
-              </button>
-              <button type="button" class="recent__nav-btn recent__nav-btn--filled" data-recent-next aria-label="Вперёд">
-                <span class="recent__nav-btn__icon" aria-hidden="true"></span>
-              </button>
+    <section class="sellers" aria-labelledby="sellers-title">
+      <div class="container">
+        <div class="sellers__panel">
+          <div class="sellers__intro">
+            <p class="sellers__eyebrow" data-i18n="section.sellersEyebrow">Партнёры</p>
+            <h2 class="sellers__title" id="sellers-title" data-i18n="section.sellers">Наши продавцы</h2>
+            <p class="sellers__desc" data-i18n="section.sellersDesc">Мы работаем только с лучшими игроками на рынке. Безопасность сделки обеспечена</p>
+            <a href="pages/catalog.html" class="btn btn--primary" data-i18n="section.showAllSellers">показать всех</a>
+          </div>
+          <div class="sellers__grid" id="sellers-grid" role="list" aria-label="Популярные продавцы"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="home-faq" aria-labelledby="home-faq-title">
+      <div class="container">
+        <header class="home-faq__head">
+          <p class="home-eyebrow" data-i18n="faq.eyebrow">Помощь</p>
+          <h2 class="home-section-title" id="home-faq-title" data-i18n="faq.title">Частые вопросы</h2>
+        </header>
+
+        <div class="home-faq__list">
+          <details class="home-faq__item">
+            <summary class="home-faq__question">
+              <span data-i18n="faq.q1">Как купить или арендовать технику на сайте?</span>
+            </summary>
+            <div class="home-faq__body">
+              <p class="home-faq__answer" data-i18n="faq.a1">Откройте каталог, выберите нужную категорию и отфильтруйте объявления по региону, марке, цене и другим параметрам. На странице объявления свяжитесь с продавцом через чат или по контактам — условия покупки или аренды вы согласуете напрямую.</p>
             </div>
-          </div>
-          <div class="recent__track-wrap cards-row">
-            <div class="recent__track" id="recent-track" role="list"></div>
-            <div class="cards-grid__fade" aria-hidden="true"></div>
-          </div>
+          </details>
+
+          <details class="home-faq__item">
+            <summary class="home-faq__question">
+              <span data-i18n="faq.q2">Нужна ли регистрация, чтобы смотреть объявления?</span>
+            </summary>
+            <div class="home-faq__body">
+              <p class="home-faq__answer" data-i18n="faq.a2">Нет. Каталог и карточки товаров доступны без аккаунта. Регистрация нужна, чтобы писать продавцам, сохранять избранное и размещать свои объявления.</p>
+            </div>
+          </details>
+
+          <details class="home-faq__item">
+            <summary class="home-faq__question">
+              <span data-i18n="faq.q3">Как связаться с продавцом?</span>
+            </summary>
+            <div class="home-faq__body">
+              <p class="home-faq__answer" data-i18n="faq.a3">На странице объявления нажмите «Написать продавцу». Откроется чат на Heavy Market. Для этого нужно войти в аккаунт покупателя.</p>
+            </div>
+          </details>
+
+          <details class="home-faq__item">
+            <summary class="home-faq__question">
+              <span data-i18n="faq.q4">Как разместить своё объявление?</span>
+            </summary>
+            <div class="home-faq__body">
+              <p class="home-faq__answer" data-i18n="faq.a4">Зарегистрируйтесь как продавец (или нажмите «Стать продавцом»), заполните кабинет и добавьте объявление: фото, описание, цену и параметры техники. После публикации оно появится в каталоге.</p>
+            </div>
+          </details>
+
+          <details class="home-faq__item">
+            <summary class="home-faq__question">
+              <span data-i18n="faq.q5">Можно ли выложить б/у технику частному лицу?</span>
+            </summary>
+            <div class="home-faq__body">
+              <p class="home-faq__answer" data-i18n="faq.a5">Да. На Heavy Market могут размещать объявления и компании, и частные продавцы — в том числе подержанную технику. Главное — указать честные данные, актуальные фото и цену.</p>
+            </div>
+          </details>
+
+          <details class="home-faq__item">
+            <summary class="home-faq__question">
+              <span data-i18n="faq.q6">Как работает чат с продавцом?</span>
+            </summary>
+            <div class="home-faq__body">
+              <p class="home-faq__answer" data-i18n="faq.a6">После нажатия «Написать продавцу» создаётся диалог по этому объявлению. Сообщения хранятся в разделе «Сообщения» вашего кабинета. Можно уточнить наличие, состояние техники, цену и условия сделки.</p>
+            </div>
+          </details>
+
+          <details class="home-faq__item">
+            <summary class="home-faq__question">
+              <span data-i18n="faq.q7">Есть ли гарантия сделки на платформе?</span>
+            </summary>
+            <div class="home-faq__body">
+              <p class="home-faq__answer" data-i18n="faq.a7">Heavy Market — площадка для поиска и связи. Сделку вы заключаете напрямую с продавцом. Мы помогаем удобно найти технику и связаться, но не являемся стороной договора купли-продажи или аренды. Перед сделкой рекомендуем проверить технику и документы.</p>
+            </div>
+          </details>
+
+          <details class="home-faq__item">
+            <summary class="home-faq__question">
+              <span data-i18n="faq.q8">Как связаться с поддержкой?</span>
+            </summary>
+            <div class="home-faq__body">
+              <p class="home-faq__answer" data-i18n="faq.a8">Напишите на support@heavy.by или позвоните по телефону из раздела «Контакты». Также можно приехать в офис в Могилёве (мкр. Юбилейный). Отвечаем в рабочие часы: Пн–Пт, 9:00–18:00.</p>
+            </div>
+          </details>
         </div>
       </div>
     </section>
@@ -139,7 +289,8 @@
         <div class="footer__col">
           <p class="footer__col-title" data-i18n="footer.buyer">Покупателю</p>
           <div class="footer__links-row">
-            <a href="#" class="footer__link" data-i18n="footer.support">Служба поддержки</a>
+            <a href="pages/about.html" class="footer__link" data-i18n="footer.about">Контакты</a>
+            <a href="pages/about.html#contacts" class="footer__link" data-i18n="footer.support">Служба поддержки</a>
             <a href="pages/seller.html" class="footer__link" data-i18n="footer.seller">Стать продавцом</a>
           </div>
         </div>
