@@ -81,6 +81,8 @@ const i18n = {
       } else if (page === 'seller') {
         document.title = this.t('page.sellerTitle');
       } else if (page === 'profile') {
+        document.title = this.t('page.profileHubTitle');
+      } else if (page === 'profile-settings') {
         document.title = this.t('page.profileTitle');
       } else if (page === 'messages') {
         document.title = this.t('page.messagesTitle');

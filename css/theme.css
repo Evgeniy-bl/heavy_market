@@ -1,0 +1,51 @@
+[data-theme="dark"] {
+  color-scheme: dark;
+
+  --color-text-main: #e8eaed;
+  --color-text-secondary: #9aa3ad;
+  --color-text-inverted: #e8eaed;
+  --color-on-accent: #0c1014;
+
+  --color-accent: #1fc48a;
+  --color-accent-soft-bg: rgba(31, 196, 138, 0.14);
+  --color-red: #ff6b6b;
+  --color-red-dark: #c94444;
+
+  --color-form-border: #2c323a;
+  --color-footer-bg: #0c0e11;
+  --color-surface: #1a1f26;
+  --color-surface-elevated: #222831;
+  --color-surface-muted: #161a1f;
+  --color-page-bg: #101317;
+  --color-page-bg-fade: rgba(16, 19, 23, 0);
+
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-strong: rgba(255, 255, 255, 0.14);
+  --color-footer-border: rgba(255, 255, 255, 0.1);
+
+  --color-overlay-panel: rgba(26, 31, 38, 0.9);
+  --color-overlay-panel-border: rgba(255, 255, 255, 0.1);
+  --color-overlay-panel-soft: rgba(255, 255, 255, 0.06);
+  --color-overlay-panel-input: #222831;
+
+  --color-chip-bg: rgba(255, 255, 255, 0.08);
+
+  --shadow-card: 0 24px 48px rgba(0, 0, 0, 0.45);
+}
+
+[data-theme="dark"] .hero-filter__tabs-wrap,
+[data-theme="dark"] .catalog-tabs-wrap {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme="dark"] .hero-filter__tab:not(.is-active) .hero-filter__tab-icon img,
+[data-theme="dark"] .catalog-tabs__btn:not(.is-active) .catalog-tabs__icon img {
+  filter: brightness(0) invert(1);
+  opacity: 0.72;
+}
+
+[data-theme="dark"] .hero-filter__tab:hover:not(.is-active) .hero-filter__tab-icon img,
+[data-theme="dark"] .catalog-tabs__btn:hover:not(.is-active) .catalog-tabs__icon img {
+  filter: invert(37%) sepia(84%) saturate(748%) hue-rotate(123deg) brightness(92%) contrast(101%);
+  opacity: 0.95;
+}
