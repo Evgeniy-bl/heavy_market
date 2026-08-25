@@ -1,3 +1,5 @@
+import { isProductPublished } from './product-status.js';
+
 const DEFAULT_API_BASE = 'http://localhost:3001';
 
 function getApiBaseURL() {
@@ -12,20 +14,36 @@ function getApiBaseURL() {
       return DEFAULT_API_BASE;
     }
 
-    const isLocalHost = hostname === 'localhost' || hostname === '127.0.0.1';
     const isApiPort = port === '3000' || port === '3001';
 
-    if (isLocalHost && isApiPort) {
+    if (isApiPort) {
       return origin;
     }
   } catch {
-    /* ignore */
   }
 
   return DEFAULT_API_BASE;
 }
 
 const baseURL = getApiBaseURL();
+
+export async function deleteResource(url) {
+  try {
+    const response = await fetch(url, {
+      method: 'DELETE',
+      cache: 'no-store'
+    });
+
+    if (!response.ok && response.status !== 404) {
+      throw new Error(`Request failed: ${response.status} ${response.statusText}`);
+    }
+
+    return true;
+  } catch (error) {
+    const message = error?.message || String(error);
+    throw new Error(`JSON Server недоступен или запрос не выполнен: ${message}`);
+  }
+}
 
 async function fetchJSON(url, options = {}) {
   try {
@@ -69,7 +87,10 @@ function createQueryString(filters) {
 
 export const api = {
   async getProducts(filters = {}) {
-    return fetchJSON(`${baseURL}/products${createQueryString(filters)}`);
+    const { includeInactive = false, ...query } = filters;
+    const products = await fetchJSON(`${baseURL}/products${createQueryString(query)}`);
+    if (includeInactive) return products || [];
+    return (products || []).filter(isProductPublished);
   },
 
   async getProductById(id) {
