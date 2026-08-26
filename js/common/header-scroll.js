@@ -1,7 +1,8 @@
 function initHeaderScroll() {
   const header = document.querySelector('.header');
+  const page = document.body?.dataset?.page || '';
 
-  if (!header || header.dataset.scrollReady === 'true') {
+  if (!header || header.dataset.scrollReady === 'true' || page === 'product') {
     return;
   }
 
@@ -15,13 +16,14 @@ function initHeaderScroll() {
   let ticking = false;
 
   const isLangOpen = () => document.querySelector('.lang-dropdown--open');
+  const isA11yOpen = () => document.body.classList.contains('is-a11y-panel-open');
 
   const update = () => {
     ticking = false;
     const y = window.scrollY;
     const delta = y - lastY;
 
-    if (isLangOpen() || y <= topReveal) {
+    if (isLangOpen() || isA11yOpen() || y <= topReveal) {
       header.classList.remove('is-hidden');
       lastY = y;
       return;

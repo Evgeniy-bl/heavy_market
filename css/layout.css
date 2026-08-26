@@ -1,4 +1,4 @@
-/* Global page layout — containers and shared grids */
+
 
 .container {
   width: min(var(--container-max), 100vw - var(--container-gutter) * 2);

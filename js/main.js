@@ -1,10 +1,20 @@
+import './components/header.js';
+import './components/footer.js';
 import Modal from './components/modal.js';
 import './common/i18n.js';
 import './common/header-scroll.js';
 import './common/preloader.js';
-import { initUserMenu } from './auth/user-menu.js';
+import { ThemeManager } from './common/theme.js';
+import { AccessibilityManager } from './common/accessibility.js';
+import { initUserMenu, initBecomeSellerCta } from './auth/user-menu.js';
 import { bindMessagesBadgeLanguageRefresh } from './utils/messages-badge.js';
+import { initMobileNav } from './components/mobile-nav.js';
 
 Modal.init();
+AccessibilityManager.init();
+ThemeManager.init();
 initUserMenu();
+initBecomeSellerCta();
+initMobileNav();
+document.addEventListener('languageChanged', initBecomeSellerCta);
 bindMessagesBadgeLanguageRefresh();

@@ -16,6 +16,8 @@ let activeCategory = 'transport';
 let activeType = 'trucks';
 let homeDataPromise = null;
 
+const SEGMENT_CATEGORIES = ['transport', 'agriculture', 'construction'];
+
 function buildSelectOptions(values, anyLabel, labelFn = (value) => value) {
   const options = [`<option value="">${anyLabel}</option>`];
   values.forEach((value) => {
@@ -121,6 +123,12 @@ function updateSearchCount() {
 function setActiveTab(category) {
   activeCategory = category;
   activeType = CATEGORY_TYPES[category][0];
+
+  const segmentIndex = SEGMENT_CATEGORIES.indexOf(category);
+  const segmentTabs = document.querySelector('[data-segment-tabs]');
+  if (segmentTabs && segmentIndex >= 0) {
+    segmentTabs.style.setProperty('--segment-index', String(segmentIndex));
+  }
 
   document.querySelectorAll('[data-category-tab]').forEach((tab) => {
     const isActive = tab.dataset.categoryTab === category;

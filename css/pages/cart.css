@@ -13,7 +13,7 @@
   gap: 20px;
   align-items: center;
   padding: 16px;
-  background: var(--color-white);
+  background: var(--color-surface);
   border-radius: var(--radius-md);
   border: 1px solid var(--color-border-strong);
 }
@@ -26,7 +26,7 @@
 }
 
 .cart-item__price {
-  font-size: 20px;
+  font-size: 1.25rem;
   font-weight: 600;
   color: var(--color-accent);
 }
@@ -40,6 +40,6 @@
 .cart-summary {
   margin-top: 32px;
   text-align: right;
-  font-size: 24px;
+  font-size: 1.5rem;
   font-weight: 600;
 }
