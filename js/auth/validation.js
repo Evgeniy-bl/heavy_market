@@ -1,4 +1,12 @@
 import { t } from '../common/i18n.js';
+import {
+  isOldEnough,
+  getPasswordRuleErrors,
+  mapPasswordErrorCode
+} from './register-rules.js';
+
+export { getMaxBirthDate } from './register-rules.js';
+export { isCommonPassword } from './common-passwords.js';
 
 export const EMAIL_RE = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 export const PHONE_RE = /^\+375\s?\(?(29|33|25|44)\)?\s?\d{3}-?\d{2}-?\d{2}$/;
@@ -92,10 +100,7 @@ export function validateBirthDateField(field) {
     showError(field, t('validation.required'));
     return false;
   }
-  const birth = new Date(value);
-  const today = new Date();
-  const minAge = new Date(today.getFullYear() - 16, today.getMonth(), today.getDate());
-  if (birth > minAge) {
+  if (!isOldEnough(value)) {
     showError(field, t('validation.ageRequirement'));
     return false;
   }
@@ -105,32 +110,15 @@ export function validateBirthDateField(field) {
 
 export function validatePasswordField(field) {
   const value = field.value;
-  if (!value) {
-    showError(field, t('validation.required'));
-    return false;
+  const errors = getPasswordRuleErrors(value);
+  if (!errors.length) {
+    clearError(field);
+    return true;
   }
-  if (value.length < 8 || value.length > 20) {
-    showError(field, t('validation.passwordLength'));
-    return false;
-  }
-  if (!/[A-Z]/.test(value)) {
-    showError(field, t('validation.passwordUppercase'));
-    return false;
-  }
-  if (!/[a-z]/.test(value)) {
-    showError(field, t('validation.passwordLowercase'));
-    return false;
-  }
-  if (!/\d/.test(value)) {
-    showError(field, t('validation.passwordNumber'));
-    return false;
-  }
-  if (!/[^A-Za-z0-9]/.test(value)) {
-    showError(field, t('validation.passwordSpecial'));
-    return false;
-  }
-  clearError(field);
-  return true;
+
+  const code = mapPasswordErrorCode(errors[0]);
+  showError(field, t(`validation.${code}`));
+  return false;
 }
 
 export function validatePasswordMatch(passwordField, confirmField) {
@@ -190,10 +178,4 @@ export function formatPhoneInput(value) {
 
 export function phoneToDigits(value) {
   return value.replace(/\D/g, '');
-}
-
-export function getMaxBirthDate() {
-  const d = new Date();
-  d.setFullYear(d.getFullYear() - 16);
-  return d.toISOString().slice(0, 10);
 }

@@ -1,16 +1,10 @@
-import Modal from '../components/modal.js';
+import { getCurrentUser, resolveAuthPath, getProfilePath } from './session.js';
 import { t } from '../common/i18n.js';
-import { getCurrentUser, resolveAuthPath } from './session.js';
+import { isAdmin, isSeller } from '../utils/user-role.js';
+import { openAuthModal } from './require-auth.js';
 
 function getProfileUrl(user) {
-  switch (user.role) {
-    case 'landlord':
-      return resolveAuthPath('landlord-profile.html');
-    case 'admin':
-      return resolveAuthPath('admin.html');
-    default:
-      return resolveAuthPath('profile.html');
-  }
+  return getProfilePath(user);
 }
 
 export function initUserMenu() {
@@ -23,28 +17,33 @@ export function initUserMenu() {
         return;
       }
 
-      const loginUrl = resolveAuthPath('login.html');
-      const registerUrl = resolveAuthPath('register.html');
-
-      Modal.open({
-        content: `
-          <p class="modal__text">${t('auth.profileModal.message')}</p>
-          <div class="modal__actions modal__actions--stack">
-            <a href="${loginUrl}" class="btn btn--primary btn--full">${t('auth.login.submit')}</a>
-            <a href="${registerUrl}" class="btn btn--secondary btn--full">${t('auth.register.submit')}</a>
-          </div>
-        `,
-        raw: true,
-        closeLabel: t('common.close'),
-        onReady(root) {
-          const dialog = root.querySelector('.modal__dialog');
-          const title = document.createElement('h2');
-          title.className = 'modal__title';
-          title.textContent = t('auth.profileModal.title');
-          const body = root.querySelector('[data-modal-body]');
-          dialog.insertBefore(title, body);
-        }
-      });
+      openAuthModal();
     });
+  });
+}
+
+export function initBecomeSellerCta() {
+  document.querySelectorAll('[data-become-seller]').forEach((link) => {
+    const user = getCurrentUser();
+
+    if (isAdmin(user)) {
+      link.hidden = true;
+      link.setAttribute('aria-hidden', 'true');
+      return;
+    }
+
+    link.hidden = false;
+    link.removeAttribute('aria-hidden');
+
+    if (isSeller(user)) {
+      link.href = resolveAuthPath('create-listing.html');
+      link.textContent = t('header.addListing');
+      link.dataset.i18n = 'header.addListing';
+      return;
+    }
+
+    link.href = resolveAuthPath('seller.html');
+    link.textContent = t('header.becomeSeller');
+    link.dataset.i18n = 'header.becomeSeller';
   });
 }

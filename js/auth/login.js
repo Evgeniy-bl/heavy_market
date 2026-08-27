@@ -1,22 +1,25 @@
+import '../components/header.js';
+import '../components/footer.js';
+import '../common/i18n.js';
 import { API } from '../api.js';
 import { t } from '../common/i18n.js';
+import Modal from '../components/modal.js';
 import { AccessibilityManager } from '../common/accessibility.js';
 import { ThemeManager } from '../common/theme.js';
 import {
   clearError,
   validateIdentifierField,
   validateRequired,
-  phoneToDigits,
-  EMAIL_RE
+  phoneToDigits
 } from './validation.js';
 import { saveLoginSession, getRedirectPath } from './session.js';
 
 const form = document.getElementById('loginForm');
 const submitBtn = document.getElementById('loginSubmit');
-const errorModal = document.querySelector('[data-modal="login-error"]');
 const errorText = document.querySelector('[data-login-error-text]');
 
 function init() {
+  Modal.init();
   AccessibilityManager.init();
   ThemeManager.init();
   bindEvents();
@@ -38,16 +41,6 @@ function bindEvents() {
       input.type = isPassword ? 'text' : 'password';
       btn.setAttribute('aria-pressed', String(isPassword));
     });
-  });
-
-  errorModal?.querySelectorAll('[data-modal-close]').forEach((btn) => {
-    btn.addEventListener('click', closeLoginError);
-  });
-
-  document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape' && errorModal?.classList.contains('is-open')) {
-      closeLoginError();
-    }
   });
 }
 
@@ -90,8 +83,12 @@ async function handleSubmit(event) {
     }
 
     saveLoginSession(user, remember);
-    const inPages = true;
-    window.location.href = getRedirectPath(user.role, inPages);
+    const redirect = new URLSearchParams(window.location.search).get('redirect');
+    if (redirect && !redirect.includes('://') && !redirect.startsWith('/')) {
+      window.location.href = redirect;
+      return;
+    }
+    window.location.href = getRedirectPath(user, true);
   } catch {
     showLoginError(t('auth.login.errorText'));
   } finally {
@@ -100,20 +97,8 @@ async function handleSubmit(event) {
 }
 
 function showLoginError(message) {
-  if (!errorModal) return;
   if (errorText) errorText.textContent = message;
-  errorModal.hidden = false;
-  errorModal.classList.add('is-open');
-  document.body.classList.add('modal-open');
-}
-
-function closeLoginError() {
-  if (!errorModal) return;
-  errorModal.classList.remove('is-open');
-  document.body.classList.remove('modal-open');
-  window.setTimeout(() => {
-    errorModal.hidden = true;
-  }, 300);
+  Modal.open('login-error');
 }
 
 init();

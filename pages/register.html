@@ -4,25 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Регистрация — Heavy Market</title>
+
   <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/accessibility.css">
   <link rel="stylesheet" href="../css/base.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/layout.css">
   <link rel="stylesheet" href="../css/auth.css">
+
+  <script src="../js/common/theme-switcher.js"></script>
 </head>
 <body class="auth-page" data-page="register">
 
-  <header class="header header--auth">
-    <div class="container header__inner">
-      <a href="../index.html" class="header__logo">HEAVY</a>
-      <a href="login.html" class="header__auth-link" data-i18n="auth.register.hasAccount">Уже есть аккаунт? Войти</a>
-    </div>
-  </header>
+  <div data-site-header></div>
 
   <main>
     <section class="auth-section">
       <div class="container">
-        <div class="auth-card">
+        <div class="auth-card auth-card--register">
           <div class="auth-card__header">
             <h1 class="auth-card__title" data-i18n="auth.register.title">Регистрация</h1>
             <p class="auth-card__subtitle" data-i18n="auth.register.subtitle">Создайте аккаунт на Heavy Market</p>
@@ -31,6 +31,7 @@
           <form id="registerForm" class="auth-form" novalidate>
             <section class="form-section">
               <h2 class="form-section__title" data-i18n="auth.register.sectionPersonal">Личная информация</h2>
+
               <div class="form-row">
                 <div class="form-group">
                   <label class="form-label" for="firstName" data-i18n="auth.register.firstName">Имя</label>
@@ -43,11 +44,13 @@
                   <span class="form-error" data-error="lastName"></span>
                 </div>
               </div>
+
               <div class="form-group">
                 <label class="form-label" for="patronymic" data-i18n="auth.register.patronymic">Отчество</label>
                 <input class="form-field__control" type="text" id="patronymic" name="patronymic" pattern="^[А-Яа-яA-Za-zЁё]{2,}$">
                 <span class="form-error" data-error="patronymic"></span>
               </div>
+
               <div class="form-group">
                 <label class="form-label" for="birthDate" data-i18n="auth.register.birthDate">Дата рождения</label>
                 <input class="form-field__control" type="date" id="birthDate" name="birthDate" required>
@@ -57,11 +60,13 @@
 
             <section class="form-section">
               <h2 class="form-section__title" data-i18n="auth.register.sectionContacts">Контактные данные</h2>
+
               <div class="form-group">
                 <label class="form-label" for="phone" data-i18n="auth.register.phone">Телефон</label>
                 <input class="form-field__control" type="tel" id="phone" name="phone" required autocomplete="tel" placeholder="+375 (29) 000-00-00">
                 <span class="form-error" data-error="phone"></span>
               </div>
+
               <div class="form-group">
                 <label class="form-label" for="email" data-i18n="auth.register.email">Email</label>
                 <input class="form-field__control" type="email" id="email" name="email" required autocomplete="email">
@@ -71,6 +76,7 @@
 
             <section class="form-section">
               <h2 class="form-section__title" data-i18n="auth.register.sectionSecurity">Безопасность</h2>
+
               <div class="password-method">
                 <label class="checkbox-option">
                   <input type="radio" name="passwordMethod" value="manual" checked>
@@ -90,14 +96,17 @@
                     <button type="button" class="password-toggle" data-password-toggle data-i18n="auth.showPassword">Показать</button>
                   </div>
                   <span class="form-error" data-error="password"></span>
+
                   <ul class="password-requirements">
                     <li class="requirement" data-requirement="length" data-i18n="auth.register.reqLength">8–20 символов</li>
                     <li class="requirement" data-requirement="uppercase" data-i18n="auth.register.reqUpper">Заглавная буква</li>
                     <li class="requirement" data-requirement="lowercase" data-i18n="auth.register.reqLower">Строчная буква</li>
                     <li class="requirement" data-requirement="number" data-i18n="auth.register.reqNumber">Цифра</li>
                     <li class="requirement" data-requirement="special" data-i18n="auth.register.reqSpecial">Спецсимвол</li>
+                    <li class="requirement" data-requirement="common" data-i18n="auth.register.reqCommon">Не из топ-100 популярных паролей</li>
                   </ul>
                 </div>
+
                 <div class="form-group">
                   <label class="form-label" for="passwordConfirm" data-i18n="auth.register.passwordConfirm">Подтверждение пароля</label>
                   <input class="form-field__control" type="password" id="passwordConfirm" name="passwordConfirm" autocomplete="new-password">
@@ -119,6 +128,7 @@
 
             <section class="form-section">
               <h2 class="form-section__title" data-i18n="auth.register.sectionNickname">Никнейм</h2>
+
               <div class="form-group">
                 <label class="form-label" for="nickname" data-i18n="auth.register.nickname">Никнейм</label>
                 <div class="nickname-wrapper">
@@ -127,26 +137,6 @@
                 </div>
                 <span class="form-help" id="nicknameAttempts" data-i18n="auth.register.nicknameAttempts">Попыток: 0/5</span>
                 <span class="form-error" data-error="nickname"></span>
-              </div>
-            </section>
-
-            <section class="form-section">
-              <h2 class="form-section__title" data-i18n="auth.register.sectionRole">Тип аккаунта</h2>
-              <div class="radio-group">
-                <label class="radio-option radio-option--card">
-                  <input type="radio" name="role" value="renter" checked>
-                  <span class="radio-card">
-                    <span class="radio-card__title" data-i18n="auth.register.role.renter">Покупатель</span>
-                    <span class="radio-card__text" data-i18n="auth.register.role.renterDesc">Поиск техники, избранное, связь с продавцами</span>
-                  </span>
-                </label>
-                <label class="radio-option radio-option--card">
-                  <input type="radio" name="role" value="landlord">
-                  <span class="radio-card">
-                    <span class="radio-card__title" data-i18n="auth.register.role.landlord">Продавец</span>
-                    <span class="radio-card__text" data-i18n="auth.register.role.landlordDesc">Размещение объявлений и кабинет продавца</span>
-                  </span>
-                </label>
               </div>
             </section>
 
@@ -161,12 +151,6 @@
             </section>
 
             <button type="submit" id="registerSubmit" class="btn btn--primary btn--lg btn--full" data-i18n="auth.register.submit">Зарегистрироваться</button>
-
-            <div class="auth-social" aria-hidden="true">
-              <button type="button" class="auth-social__btn">Google</button>
-              <button type="button" class="auth-social__btn">Facebook</button>
-              <button type="button" class="auth-social__btn">Apple</button>
-            </div>
           </form>
 
           <div class="auth-card__footer">
@@ -178,27 +162,20 @@
     </section>
   </main>
 
-  <footer class="footer footer--auth">
-    <div class="container">
-      <div class="footer__bottom">
-        <p data-i18n="footer.copy">© 2019–2026 Группа компаний «Heavy Market»</p>
-      </div>
-    </div>
-  </footer>
+  <div data-site-footer></div>
 
-  <div class="modal" data-modal="register-success" hidden aria-hidden="true">
-    <div class="modal__backdrop" data-modal-close></div>
+  <div class="modal" data-modal="register-success" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="register-success-title">
+    <div class="modal__backdrop" aria-hidden="true"></div>
     <section class="modal__dialog">
-      <button class="modal__close" type="button" data-modal-close aria-label="×">×</button>
-      <h2 class="modal__title" data-i18n="auth.register.successTitle">Регистрация завершена</h2>
+      <button class="modal__close" type="button" data-register-success-close data-i18n-aria="common.close">×</button>
+      <h2 class="modal__title" id="register-success-title" data-i18n="auth.register.successTitle">Регистрация завершена</h2>
       <p class="modal__message" data-register-success-name data-i18n="auth.register.successText">Добро пожаловать!</p>
       <div class="modal__actions">
-        <button type="button" class="btn btn--primary" id="goToCatalog" data-i18n="auth.register.goToCatalog">Перейти в каталог</button>
+        <button type="button" class="btn btn--primary" id="goToProfile" data-i18n="auth.register.goToProfile">Перейти в профиль</button>
       </div>
     </section>
   </div>
 
-  <script type="module" src="../js/common/i18n.js"></script>
   <script type="module" src="../js/auth/register.js"></script>
 </body>
 </html>

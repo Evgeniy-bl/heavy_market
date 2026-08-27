@@ -4,7 +4,18 @@
 }
 
 .header--auth .header__inner {
-  justify-content: space-between;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.header--auth .a11y-menu {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.header--auth .theme-toggle {
+  flex-shrink: 0;
 }
 
 .header--auth .header__auth-link {
@@ -38,9 +49,16 @@
   padding: 40px 16px 56px;
 }
 
+.auth-section .container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
 .auth-card {
   width: min(520px, 100%);
-  background: var(--color-white);
+  margin-inline: auto;
+  background: var(--color-surface);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-card);
   overflow: hidden;
@@ -49,7 +67,7 @@
 .auth-card__header {
   padding: 28px 32px 24px;
   background: linear-gradient(135deg, var(--color-accent) 0%, #007a52 100%);
-  color: var(--color-white);
+  color: var(--color-on-accent);
 }
 
 .auth-card__title {
@@ -130,7 +148,7 @@
   padding: 12px 14px;
   border: 1px solid var(--color-form-border);
   border-radius: var(--radius-sm);
-  background: var(--color-white);
+  background: var(--color-surface);
   color: var(--color-text-main);
   font: inherit;
   font-size: var(--fs-sm);
@@ -151,7 +169,7 @@
   min-height: 18px;
   margin-top: 6px;
   color: var(--color-red);
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.35;
 }
 
@@ -159,7 +177,7 @@
   display: block;
   margin-top: 6px;
   color: var(--color-text-secondary);
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.35;
 }
 
@@ -210,7 +228,7 @@
   border: none;
   background: none;
   color: var(--color-text-secondary);
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
 }
@@ -225,7 +243,7 @@
 
 .requirement {
   color: var(--color-text-secondary);
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.35;
 }
 
@@ -292,14 +310,14 @@
 .radio-card__text {
   display: block;
   color: var(--color-text-secondary);
-  font-size: 12px;
+  font-size: 0.75rem;
   line-height: 1.35;
 }
 
 .radio-option--card input:checked + .radio-card {
   border-color: var(--color-accent);
   box-shadow: 0 0 0 3px var(--color-accent-soft-bg);
-  background: var(--color-white);
+  background: var(--color-surface);
 }
 
 .nickname-wrapper {
@@ -312,22 +330,8 @@
   flex: 1;
 }
 
-.auth-social {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.auth-social__btn {
-  padding: 10px;
-  border: 1px solid var(--color-form-border);
-  border-radius: var(--radius-sm);
-  background: var(--color-white);
-  color: var(--color-text-secondary);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: default;
+.auth-card--register {
+  width: min(720px, 100%);
 }
 
 .btn--lg {
@@ -363,8 +367,7 @@
   }
 
   .form-row,
-  .radio-group,
-  .auth-social {
+  .radio-group {
     grid-template-columns: 1fr;
   }
 

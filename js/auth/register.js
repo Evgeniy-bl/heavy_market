@@ -1,3 +1,6 @@
+import '../components/header.js';
+import '../components/footer.js';
+import '../common/i18n.js';
 import { API } from '../api.js';
 import { t } from '../common/i18n.js';
 import { AccessibilityManager } from '../common/accessibility.js';
@@ -14,24 +17,26 @@ import {
   validateNicknameField,
   validateAgreementField,
   formatPhoneInput,
-  phoneToDigits,
-  getMaxBirthDate
+  phoneToDigits
 } from './validation.js';
-import { saveFullUser, resolveAuthPath } from './session.js';
+import { getPasswordRuleErrors } from './register-rules.js';
+import { saveFullUser, resolveAuthPath, getCurrentUser, getProfilePath } from './session.js';
+import Modal from '../components/modal.js';
 
 const form = document.getElementById('registerForm');
 const submitBtn = document.getElementById('registerSubmit');
-const successModal = document.querySelector('[data-modal="register-success"]');
 const successName = document.querySelector('[data-register-success-name]');
-const goToCatalogBtn = document.getElementById('goToCatalog');
+const goToProfileBtn = document.getElementById('goToProfile');
 
 const ADJECTIVES = ['happy', 'swift', 'bold', 'calm', 'bright', 'lucky', 'smart', 'rapid'];
 const NOUNS = ['wolf', 'bear', 'eagle', 'tiger', 'fox', 'hawk', 'lion', 'panda'];
 
 let nicknameAttempts = 0;
 let passwordMethod = 'manual';
+let registrationSucceeded = false;
 
 function init() {
+  Modal.init();
   AccessibilityManager.init();
   ThemeManager.init();
 
@@ -39,9 +44,6 @@ function init() {
   if (counter) {
     counter.textContent = t('auth.register.nicknameAttempts').replace('{count}', '0');
   }
-
-  const birthDate = form?.querySelector('[name="birthDate"]');
-  if (birthDate) birthDate.max = getMaxBirthDate();
 
   togglePasswordMethod('manual');
   bindEvents();
@@ -51,7 +53,10 @@ function bindEvents() {
   form?.addEventListener('submit', handleSubmit);
 
   form?.querySelectorAll('input, select, textarea').forEach((input) => {
-    input.addEventListener('blur', () => validateField(input));
+    input.addEventListener('blur', () => {
+      if (input.name === 'birthDate') return;
+      validateField(input);
+    });
     input.addEventListener('input', () => {
       clearError(input);
       if (input.name === 'phone') {
@@ -79,12 +84,16 @@ function bindEvents() {
   document.getElementById('copyPassword')?.addEventListener('click', copyAutoPassword);
   document.getElementById('generateNickname')?.addEventListener('click', generateNickname);
 
-  goToCatalogBtn?.addEventListener('click', () => {
-    window.location.href = resolveAuthPath('catalog.html');
+  goToProfileBtn?.addEventListener('click', () => {
+    const redirect = new URLSearchParams(window.location.search).get('redirect');
+    const user = getCurrentUser();
+    window.location.href = redirect
+      ? resolveAuthPath(redirect)
+      : getProfilePath(user);
   });
 
-  successModal?.querySelectorAll('[data-modal-close]').forEach((btn) => {
-    btn.addEventListener('click', closeSuccessModal);
+  document.querySelector('[data-register-success-close]')?.addEventListener('click', () => {
+    goToProfileBtn?.click();
   });
 }
 
@@ -115,8 +124,7 @@ function validateField(field) {
       return validatePasswordField(field);
     case 'passwordConfirm': {
       const password = form.querySelector('[name="password"]');
-      const ok = validatePasswordMatch(password, field);
-      return ok;
+      return validatePasswordMatch(password, field);
     }
     case 'nickname':
       return validateNicknameField(field);
@@ -169,12 +177,15 @@ function togglePasswordMethod(method) {
 }
 
 function updatePasswordRequirements(value) {
+  const errors = new Set(getPasswordRuleErrors(value));
+
   const rules = {
-    length: value.length >= 8 && value.length <= 20,
-    uppercase: /[A-Z]/.test(value),
-    lowercase: /[a-z]/.test(value),
-    number: /\d/.test(value),
-    special: /[^A-Za-z0-9]/.test(value)
+    length: !errors.has('length') && !errors.has('required'),
+    uppercase: !errors.has('uppercase') && !errors.has('required'),
+    lowercase: !errors.has('lowercase') && !errors.has('required'),
+    number: !errors.has('number') && !errors.has('required'),
+    special: !errors.has('special') && !errors.has('required'),
+    common: !errors.has('common') && !errors.has('required')
   };
 
   Object.entries(rules).forEach(([key, ok]) => {
@@ -232,9 +243,6 @@ function generateNickname() {
   }
   const counter = document.getElementById('nicknameAttempts');
   if (counter) counter.textContent = t('auth.register.nicknameAttempts').replace('{count}', String(nicknameAttempts));
-  if (nicknameAttempts >= 5 && field) {
-    field.readOnly = false;
-  }
 }
 
 async function handleSubmit(event) {
@@ -258,39 +266,42 @@ async function handleSubmit(event) {
       phone: phoneToDigits(form.phone.value),
       email: form.email.value.trim(),
       nickname: form.nickname.value.trim(),
-      role: form.role.value,
+      role: 'user',
       password,
       createdAt: new Date().toISOString(),
       favorites: [],
-      bookings: []
+      bookings: [],
+      sellerId: null,
+      sellerType: null,
+      companyName: null
     };
 
     const createdUser = await API.createUser(userData);
     saveFullUser(createdUser);
+    registrationSucceeded = true;
     showSuccessModal(createdUser.firstName);
   } catch (error) {
     alert(error.message || t('auth.register.error'));
   } finally {
-    submitBtn.disabled = false;
-    submitBtn.textContent = originalText;
+    if (!registrationSucceeded) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+    }
   }
 }
 
 function showSuccessModal(name) {
   if (successName) {
+    successName.removeAttribute('data-i18n');
     successName.textContent = t('auth.register.successText').replace('{name}', name);
   }
-  successModal.hidden = false;
-  successModal.classList.add('is-open');
-  document.body.classList.add('modal-open');
-}
 
-function closeSuccessModal() {
-  successModal.classList.remove('is-open');
-  document.body.classList.remove('modal-open');
+  form?.setAttribute('inert', '');
+  submitBtn.disabled = true;
+
   window.setTimeout(() => {
-    successModal.hidden = true;
-  }, 300);
+    Modal.open('register-success');
+  }, 0);
 }
 
 init();
