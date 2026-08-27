@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru" class="is-preload">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Мои объявления — Heavy Market</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/accessibility.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/preloader.css">
+  <link rel="stylesheet" href="../css/pages/profile.css">
+  <link rel="stylesheet" href="../css/pages/catalog.css">
+  <link rel="stylesheet" href="../css/pages/favorites.css">
+  <link rel="stylesheet" href="../css/pages/my-listings.css">
+  <script src="../js/common/theme-switcher.js"></script>
+</head>
+<body data-page="my-listings">
+
+  <div id="preloader" class="preloader" role="status" aria-live="polite" aria-busy="true">
+    <div class="preloader__inner">
+      <div class="preloader__logo" aria-hidden="true">HEAVY</div>
+      <div class="preloader__spinner" aria-hidden="true"></div>
+      <p class="preloader__text">Загрузка...</p>
+    </div>
+  </div>
+
+    <div data-site-header></div>
+
+<main class="profile-page profile-page--sub favorites-page">
+    <section class="profile-hero profile-hero--subpage">
+      <div class="container profile-hero__inner">
+        <div class="profile-mobile-bar">
+          <a href="profile.html" class="profile-mobile-bar__back" data-i18n="listing.back">Назад</a>
+          <h1 class="profile-mobile-bar__title" data-i18n="profile.myListings">Мои объявления</h1>
+        </div>
+
+        <div class="profile-hero__desktop">
+        <nav class="breadcrumbs profile-hero__breadcrumbs" aria-label="breadcrumb">
+          <a href="../index.html" class="breadcrumbs__item" data-i18n="product.home">Главная</a>
+          <span class="breadcrumbs__sep" aria-hidden="true"></span>
+          <a href="profile.html" class="breadcrumbs__item" data-i18n="profile.cabinet">Мой кабинет</a>
+          <span class="breadcrumbs__sep" aria-hidden="true"></span>
+          <span class="breadcrumbs__item breadcrumbs__item--current" data-i18n="profile.myListings">Мои объявления</span>
+        </nav>
+        <h1 class="profile-hero__title" data-i18n="profile.myListings">Мои объявления</h1>
+
+        <nav class="profile-tabs" aria-label="Разделы кабинета">
+          <a href="my-listings.html" class="profile-tabs__link is-active" aria-current="page" data-profile-tab-listings data-i18n="profile.myListings">Мои объявления</a>
+          <a href="favorites.html" class="profile-tabs__link" data-profile-tab-favorites data-i18n="profile.favorites">Избранное</a>
+          <a href="messages.html" class="profile-tabs__link profile-tabs__link--messages">
+            <span data-i18n="profile.messages">Сообщения</span>
+            <span class="profile-tabs__badge" data-messages-badge hidden>
+              <span class="profile-tabs__badge-full" data-messages-badge-full></span><span class="profile-tabs__badge-short" data-messages-badge-short></span>
+            </span>
+          </a>
+          <a href="profile-settings.html" class="profile-tabs__link profile-tabs__link--settings" data-profile-tab-settings data-i18n-aria="profile.settingsTitle">
+            <img class="profile-tabs__icon" src="../assets/icons/settings.svg" alt="" width="24" height="24" aria-hidden="true">
+            <span class="profile-tabs__settings-full" data-i18n="profile.settingsTitle">Настройки профиля</span>
+            <span class="profile-tabs__settings-short" data-i18n="profile.settingsShort">Настройки</span>
+          </a>
+        </nav>
+        </div>
+      </div>
+    </section>
+
+    <div class="container my-listings-page__content">
+      <p class="my-listings-usage" data-listings-usage hidden>
+        <span data-i18n="myListings.usage">Использовано объявлений:</span>
+        <span class="my-listings-usage__count" data-listings-usage-count>0/10</span>
+      </p>
+
+      <div class="my-listings-filters" role="tablist" aria-label="Фильтр объявлений">
+        <button
+          type="button"
+          class="my-listings-filters__btn is-active"
+          role="tab"
+          aria-selected="true"
+          data-listings-filter="active"
+          data-i18n="myListings.tab.active"
+        >Активные</button>
+        <button
+          type="button"
+          class="my-listings-filters__btn"
+          role="tab"
+          aria-selected="false"
+          data-listings-filter="pending"
+          data-i18n="myListings.tab.pending"
+        >На модерации</button>
+      </div>
+
+      <div class="my-listings-toolbar">
+        <div class="favorites-search catalog-results__search">
+          <label class="visually-hidden" for="listings-search" data-i18n="myListings.search">Поиск по объявлениям</label>
+          <span class="catalog-search__icon" aria-hidden="true"></span>
+          <input
+            class="catalog-search__input"
+            type="search"
+            id="listings-search"
+            data-i18n-placeholder="myListings.search"
+            placeholder="Поиск по объявлениям"
+            autocomplete="off"
+          >
+        </div>
+        <a href="create-listing.html" class="my-listings-add" data-add-listing data-i18n="myListings.add">+ Добавить объявление</a>
+      </div>
+
+      <div id="listings-grid" class="favorites-grid catalog-results__grid" role="list"></div>
+      <div id="listings-pagination" class="favorites-pagination"></div>
+      <p id="listings-empty" class="favorites-empty" hidden data-i18n="myListings.empty">У вас пока нет объявлений</p>
+    </div>
+  </main>
+
+    <div data-site-footer></div>
+
+<div class="modal" data-modal="auth-required" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="auth-required-title">
+    <div class="modal__backdrop" data-modal-close></div>
+    <section class="modal__dialog">
+      <button class="modal__close" type="button" data-modal-close data-i18n-aria="common.close">×</button>
+      <h2 class="modal__title" id="auth-required-title" data-i18n="auth.profileModal.title">Войдите в аккаунт</h2>
+      <p class="modal__text" data-auth-modal-message data-i18n="auth.profileModal.message">Чтобы открыть личный кабинет, войдите или зарегистрируйтесь</p>
+      <div class="modal__actions modal__actions--stack">
+        <a href="login.html" class="btn btn--primary btn--full" data-i18n="auth.login.submit">Войти</a>
+        <a href="register.html" class="btn btn--secondary btn--full" data-i18n="auth.register.submit">Зарегистрироваться</a>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="../js/main.js"></script>
+  <script type="module" src="../js/pages/my-listings.js"></script>
+</body>
+</html>

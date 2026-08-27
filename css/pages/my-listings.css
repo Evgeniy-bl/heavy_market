@@ -1,0 +1,227 @@
+.my-listings-page__content {
+  padding: 32px 0 80px;
+}
+
+.my-listings-usage {
+  margin: 0 0 16px;
+  color: var(--color-text-secondary);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+}
+
+.my-listings-usage__count {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+.my-listings-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.my-listings-filters__btn {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  background: var(--color-surface);
+  color: var(--color-text-secondary);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.my-listings-filters__btn.is-active {
+  border-color: var(--color-accent);
+  background: var(--color-accent-soft-bg);
+  color: var(--color-accent);
+}
+
+.my-listings-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.my-listings-toolbar .catalog-results__search {
+  flex: 1;
+  margin: 0;
+}
+
+.my-listings-add {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  height: 52px;
+  min-height: 52px;
+  padding: 0 24px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s ease, opacity 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.my-listings-add:hover {
+  background: var(--color-accent);
+  color: var(--color-on-accent);
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(0, 150, 97, 0.28);
+}
+
+.my-listings-add.is-disabled,
+.my-listings-add.is-disabled:hover {
+  background: var(--color-chip-bg);
+  color: var(--color-text-secondary);
+  opacity: 1;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.my-listings-page__content .catalog-card__status {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.02em;
+}
+
+.my-listings-page__content .catalog-card__status--pending {
+  background: var(--color-chip-bg);
+  color: var(--color-red, #eb5757);
+}
+
+.my-listings-page__content .catalog-card__status--rejected {
+  background: var(--color-chip-bg);
+  color: var(--color-text-secondary);
+}
+
+.my-listings-page__content .catalog-card--manage {
+  position: relative;
+}
+
+.my-listings-page__content .catalog-card--manage .catalog-card__footer {
+  position: relative;
+  min-height: 44px;
+}
+
+.my-listings-page__content .catalog-card--manage .catalog-card__footer-meta {
+  transition: opacity 0.22s ease, visibility 0.22s ease;
+}
+
+.my-listings-page__content .catalog-card__manage {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.22s ease, visibility 0.22s ease;
+}
+
+.my-listings-page__content .catalog-card--manage:hover .catalog-card__footer-meta,
+.my-listings-page__content .catalog-card--manage:focus-within .catalog-card__footer-meta {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.my-listings-page__content .catalog-card--manage:hover .catalog-card__manage,
+.my-listings-page__content .catalog-card--manage:focus-within .catalog-card__manage {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.my-listings-page__content .catalog-card__manage-link {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.my-listings-page__content .catalog-card__manage-link--edit {
+  background: var(--color-accent-soft-bg, #e8f8f1);
+  color: var(--color-accent);
+}
+
+.my-listings-page__content .catalog-card__manage-link--delete {
+  background: var(--color-chip-bg);
+  color: var(--color-red, #eb5757);
+}
+
+.my-listings-page__content .catalog-card__manage-link:hover {
+  filter: brightness(0.97);
+}
+
+.my-listings-page__content .catalog-card__manage-link:active {
+  transform: scale(0.98);
+}
+
+@media (hover: none), (max-width: 720px) {
+  .my-listings-page__content .catalog-card--manage .catalog-card__footer-meta {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .my-listings-page__content .catalog-card__manage {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+  }
+  .my-listings-page__content .catalog-card__manage-link {
+    min-height: 36px;
+    padding: 8px 10px;
+    font-size: 0.6875rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .my-listings-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .my-listings-add {
+    display: none;
+  }
+}

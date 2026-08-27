@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ru" class="is-preload">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Создание объявления — Heavy Market</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/accessibility.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/preloader.css">
+  <link rel="stylesheet" href="../css/pages/create-listing.css">
+  <link rel="stylesheet" href="../css/pages/loadImages.css">
+  <script src="../js/common/theme-switcher.js"></script>
+</head>
+<body data-page="create-listing">
+
+  <div id="preloader" class="preloader" role="status" aria-live="polite" aria-busy="true">
+    <div class="preloader__inner">
+      <div class="preloader__logo" aria-hidden="true">HEAVY</div>
+      <div class="preloader__spinner" aria-hidden="true"></div>
+      <p class="preloader__text">Загрузка...</p>
+    </div>
+  </div>
+
+    <div data-site-header></div>
+
+<main class="create-listing-page">
+    <div class="container create-listing-page__inner">
+      <div class="create-listing-topbar">
+        <a href="my-listings.html" class="create-listing-back" data-i18n="listing.back">Назад</a>
+        <p class="create-listing-usage" data-listings-usage hidden>
+          <span data-i18n="myListings.usage">Использовано объявлений:</span>
+          <span class="create-listing-usage__count" data-listings-usage-count>0/10</span>
+        </p>
+      </div>
+
+      <header class="create-listing-hero">
+        <p class="create-listing-hero__eyebrow" data-listing-eyebrow data-i18n="listing.createEyebrow">Новое объявление</p>
+        <h1 class="create-listing-hero__title" data-listing-title data-i18n="listing.createTitle">Создание нового объявления</h1>
+        <p class="create-listing-hero__lead" data-listing-lead data-i18n="listing.createLead">Заполните параметры техники — поля подстроятся под выбранную категорию.</p>
+      </header>
+
+      <form id="createListingForm" class="create-listing-form" novalidate>
+        <section class="listing-name-card" data-field-wrap="name" aria-labelledby="listing-name-heading">
+          <p class="listing-name-card__type" data-listing-name-type></p>
+          <label class="visually-hidden" for="listingName" id="listing-name-heading" data-i18n="listing.nameLabel">Название объявления</label>
+          <input
+            type="text"
+            id="listingName"
+            class="listing-name-card__input"
+            name="name"
+            data-listing-name
+            maxlength="120"
+            autocomplete="off"
+            data-i18n-placeholder="listing.namePlaceholder"
+            placeholder="Название появится после марки и модели"
+          >
+          <div class="listing-name-card__chips" data-listing-name-chips hidden></div>
+          <p class="listing-name-card__hint" data-i18n="listing.nameHint">Название формируется автоматически — можете изменить</p>
+          <p class="listing-name-card__error" data-field-error="name"></p>
+        </section>
+
+        <section class="create-listing-panel" aria-labelledby="listing-overview-title">
+          <div class="create-listing-panel__head">
+            <div class="create-listing-panel__titles">
+              <h2 class="create-listing-panel__title" id="listing-overview-title" data-i18n="product.overview">Обзор транспортного средства</h2>
+              <p class="create-listing-panel__hint" data-i18n="listing.overviewHint">Категория, марка, модель и технические характеристики</p>
+            </div>
+          </div>
+          <div class="create-listing-grid" data-listing-fields></div>
+        </section>
+
+        <section class="create-listing-panel" aria-labelledby="listing-media-title">
+          <div class="create-listing-panel__head">
+            <div class="create-listing-panel__titles">
+              <h2 class="create-listing-panel__title" id="listing-media-title" data-i18n="listing.mediaTitle">Медиа файлы</h2>
+              <p class="create-listing-panel__hint" data-i18n="listing.mediaHint">Главное фото и дополнительные снимки техники</p>
+            </div>
+          </div>
+          <div class="image-uploader" data-field-wrap="images">
+            <div class="image-uploader__grid" id="listingImagesGrid"></div>
+            <button type="button" class="image-uploader__add-more" id="listingImagesAddMore" data-i18n="listing.uploaderAddMore">+ Добавить еще фото</button>
+            <input id="listingImagesInput" type="file" accept="image/*" multiple hidden>
+            <p class="image-uploader__error" data-error-for="images"></p>
+          </div>
+        </section>
+
+        <section class="create-listing-panel" aria-labelledby="listing-description-title">
+          <div class="create-listing-panel__head">
+            <div class="create-listing-panel__titles">
+              <h2 class="create-listing-panel__title" id="listing-description-title" data-i18n="product.description">Описание</h2>
+              <p class="create-listing-panel__hint" data-i18n="listing.descriptionHint">Состояние, комплектация и важные детали для покупателя</p>
+            </div>
+          </div>
+          <textarea
+            class="create-listing-textarea"
+            id="listingDescription"
+            name="description"
+            rows="8"
+            data-i18n-placeholder="listing.descriptionPlaceholder"
+            placeholder="Описание..."
+          ></textarea>
+        </section>
+
+        <section class="create-listing-panel" aria-labelledby="listing-deal-title">
+          <div class="create-listing-panel__head">
+            <div class="create-listing-panel__titles">
+              <h2 class="create-listing-panel__title" id="listing-deal-title" data-i18n="listing.dealTitle">Цена и контакты</h2>
+              <p class="create-listing-panel__hint" data-i18n="listing.dealHint">Укажите стоимость, телефон и адрес продажи</p>
+            </div>
+          </div>
+          <div class="create-listing-grid" data-listing-deal-fields></div>
+        </section>
+
+        <div class="create-listing-actions">
+          <button type="button" class="create-listing-preview" data-listing-preview data-i18n="listing.preview">Предпросмотр</button>
+          <button type="submit" class="btn btn--primary btn--lg create-listing-submit" data-listing-submit data-i18n="listing.submit">Создать объявление</button>
+        </div>
+      </form>
+    </div>
+  </main>
+
+    <div data-site-footer></div>
+
+<div class="modal" data-modal="auth-required" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="auth-required-title">
+    <div class="modal__backdrop" data-modal-close></div>
+    <section class="modal__dialog">
+      <button class="modal__close" type="button" data-modal-close data-i18n-aria="common.close">×</button>
+      <h2 class="modal__title" id="auth-required-title" data-i18n="auth.profileModal.title">Войдите в аккаунт</h2>
+      <p class="modal__text" data-auth-modal-message data-i18n="auth.profileModal.message">Чтобы открыть личный кабинет, войдите или зарегистрируйтесь</p>
+      <div class="modal__actions modal__actions--stack">
+        <a href="login.html" class="btn btn--primary btn--full" data-i18n="auth.login.submit">Войти</a>
+        <a href="register.html" class="btn btn--secondary btn--full" data-i18n="auth.register.submit">Зарегистрироваться</a>
+      </div>
+    </section>
+  </div>
+
+  <div class="modal" data-modal="listing-preview" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="listing-preview-title">
+    <div class="modal__backdrop" data-modal-close></div>
+    <section class="modal__dialog">
+      <button class="modal__close" type="button" data-modal-close data-i18n-aria="common.close">×</button>
+      <h2 class="modal__title" id="listing-preview-title" data-i18n="listing.preview">Предпросмотр</h2>
+      <div data-listing-preview-body></div>
+      <div class="modal__actions">
+        <button type="button" class="btn btn--primary" data-modal-close data-i18n="common.close">Закрыть</button>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="../js/main.js"></script>
+  <script type="module" src="../js/pages/create-listing.js"></script>
+</body>
+</html>

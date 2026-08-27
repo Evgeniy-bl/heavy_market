@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ru" class="is-preload">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Стать продавцом — Heavy Market</title>
+
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/accessibility.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/preloader.css">
+  <link rel="stylesheet" href="../css/auth.css">
+  <link rel="stylesheet" href="../css/pages/about.css">
+
+  <script src="../js/common/theme-switcher.js"></script>
+</head>
+<body data-page="seller">
+
+  <div id="preloader" class="preloader" role="status" aria-live="polite" aria-busy="true">
+    <div class="preloader__inner">
+      <div class="preloader__logo" aria-hidden="true">HEAVY</div>
+      <div class="preloader__spinner" aria-hidden="true"></div>
+      <p class="preloader__text">Загрузка...</p>
+    </div>
+  </div>
+
+  <div data-site-header></div>
+
+  <main class="about-page seller-landing">
+    <section class="seller-landing__hero">
+      <div class="container">
+        <p class="about-eyebrow" data-i18n="seller.landing.eyebrow">Для бизнеса и частных продавцов</p>
+        <h1 class="about-section-title" data-i18n="seller.landing.title">Размещайте объявления на Heavy Market</h1>
+        <p class="about-section-lead" data-i18n="seller.landing.lead">Один аккаунт — и покупки, и продажи. Подключите возможность продавать и выкладывайте объявления.</p>
+      </div>
+    </section>
+
+    <section class="seller-landing__benefits" data-seller-guest>
+      <div class="container">
+        <h2 class="about-section-title seller-landing__benefits-title" data-i18n="seller.landing.benefitsTitle">Что вы получите</h2>
+
+        <ul class="seller-landing__list">
+          <li class="seller-landing__item">
+            <h3 class="seller-landing__item-title" data-i18n="seller.landing.benefit1Title">Мои объявления</h3>
+            <p class="seller-landing__item-text" data-i18n="seller.landing.benefit1Text">Управляйте объявлениями и отвечайте покупателям в том же кабинете.</p>
+          </li>
+          <li class="seller-landing__item">
+            <h3 class="seller-landing__item-title" data-i18n="seller.landing.benefit2Title">Компания или частное лицо</h3>
+            <p class="seller-landing__item-text" data-i18n="seller.landing.benefit2Text">Укажите тип продавца один раз — для компании добавьте название организации.</p>
+          </li>
+          <li class="seller-landing__item">
+            <h3 class="seller-landing__item-title" data-i18n="seller.landing.benefit3Title">Покупка и продажа</h3>
+            <p class="seller-landing__item-text" data-i18n="seller.landing.benefit3Text">Избранное и сообщения остаются: можете и продавать, и искать технику.</p>
+          </li>
+        </ul>
+
+        <div class="seller-landing__actions">
+          <a href="login.html?redirect=seller.html" class="btn btn--primary btn--lg" data-i18n="seller.landing.loginCta">Войти и стать продавцом</a>
+          <a href="register.html?redirect=seller.html" class="btn btn--secondary btn--lg" data-i18n="auth.register.submit">Зарегистрироваться</a>
+        </div>
+      </div>
+    </section>
+
+    <section class="seller-upgrade" data-seller-upgrade hidden>
+      <div class="container">
+        <div class="auth-card auth-card--register" style="margin: 0 auto;">
+          <div class="auth-card__header">
+            <h2 class="auth-card__title" data-i18n="seller.upgrade.title">Подключить продажи</h2>
+            <p class="auth-card__subtitle" data-i18n="seller.upgrade.subtitle">Выберите тип продавца — после этого сможете добавлять объявления</p>
+          </div>
+
+          <form id="becomeSellerForm" class="auth-form" novalidate>
+            <div class="radio-group">
+              <label class="radio-option radio-option--card">
+                <input type="radio" name="sellerType" value="individual" checked>
+                <span class="radio-card">
+                  <span class="radio-card__title" data-i18n="auth.register.sellerType.individual">Частное лицо</span>
+                  <span class="radio-card__text" data-i18n="auth.register.sellerType.individualDesc">Продажа техники от своего имени</span>
+                </span>
+              </label>
+              <label class="radio-option radio-option--card">
+                <input type="radio" name="sellerType" value="company">
+                <span class="radio-card">
+                  <span class="radio-card__title" data-i18n="auth.register.sellerType.company">Компания</span>
+                  <span class="radio-card__text" data-i18n="auth.register.sellerType.companyDesc">Официальный дилер или организация</span>
+                </span>
+              </label>
+            </div>
+
+            <div class="form-group" id="companyNameGroup" hidden style="margin-top: 16px;">
+              <label class="form-label" for="companyName" data-i18n="auth.register.companyName">Название компании</label>
+              <input class="form-field__control" type="text" id="companyName" name="companyName" minlength="2" maxlength="120">
+              <span class="form-error" data-error="companyName"></span>
+            </div>
+
+            <button type="submit" class="btn btn--primary btn--lg btn--full" style="margin-top: 24px;" data-i18n="seller.upgrade.submit">Стать продавцом</button>
+          </form>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div data-site-footer></div>
+
+  <div class="modal" data-modal="auth-required" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="auth-required-title">
+    <div class="modal__backdrop" data-modal-close></div>
+    <section class="modal__dialog">
+      <button class="modal__close" type="button" data-modal-close data-i18n-aria="common.close">×</button>
+      <h2 class="modal__title" id="auth-required-title" data-i18n="auth.profileModal.title">Войдите в аккаунт</h2>
+      <p class="modal__text" data-auth-modal-message data-i18n="auth.profileModal.message">Чтобы открыть личный кабинет, войдите или зарегистрируйтесь</p>
+      <div class="modal__actions modal__actions--stack">
+        <a href="login.html" class="btn btn--primary btn--full" data-i18n="auth.login.submit">Войти</a>
+        <a href="register.html" class="btn btn--secondary btn--full" data-i18n="auth.register.submit">Зарегистрироваться</a>
+      </div>
+    </section>
+  </div>
+
+  <script type="module" src="../js/main.js"></script>
+  <script type="module" src="../js/pages/become-seller.js"></script>
+</body>
+</html>
