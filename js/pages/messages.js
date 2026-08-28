@@ -1,14 +1,21 @@
 import { API } from '../api.js';
 import { api } from '../utils/api.js';
+
 import { buildSellerCatalogUrl } from '../utils/catalog-url.js';
 import { t, formatPrice } from '../common/i18n.js';
 import { markContentReady } from '../common/preloader.js';
+
 import { checkAuth } from '../auth/session.js';
-import Modal from '../components/modal.js';
+import { alertDialog } from '../components/alert.js';
+import { confirmDialog } from '../components/confirm.js';
 import {
-  getTotalUnreadCount,
-  updateMessagesTabBadge
+  updateMessagesTabBadge,
+  normalizeConversationUnread,
+  getUnreadForRole
 } from '../utils/messages-badge.js';
+import { applyProfileTabs } from '../utils/profile-tabs.js';
+import { isAdmin, isSeller, isSelfConversation } from '../utils/user-role.js';
+import { isProductActive } from '../utils/product-status.js';
 
 let currentUser = null;
 let allMessages = [];
@@ -17,6 +24,37 @@ let activeConversation = null;
 let chatMessages = [];
 let selectMode = false;
 let productsById = new Map();
+
+function getConversationRole(conversation) {
+  if (!conversation || !currentUser) return 'buyer';
+  if (Number(conversation.userId) === Number(currentUser.id)) return 'buyer';
+
+  if (
+    currentUser.sellerId != null
+    && Number(conversation.sellerId) === Number(currentUser.sellerId)
+  ) {
+    return 'seller';
+  }
+
+  return 'buyer';
+}
+
+function getMyUnread(conversation) {
+  return getUnreadForRole(conversation, getConversationRole(conversation));
+}
+
+function updateUnreadTabBadge() {
+  const total = allMessages.reduce(
+    (sum, item) => sum + getUnreadForRole(item, getConversationRole(item)),
+    0
+  );
+  updateMessagesTabBadge(total);
+}
+
+function shouldShowConversationStatus(conversation) {
+  const outgoingSender = getConversationRole(conversation) === 'seller' ? 'contact' : 'user';
+  return getMyUnread(conversation) === 0 && conversation.lastSender === outgoingSender;
+}
 
 function escapeHtml(value) {
   return String(value)
@@ -44,12 +82,59 @@ function initials(name) {
     .join('') || '?';
 }
 
-function updateUnreadTabBadge() {
-  updateMessagesTabBadge(getTotalUnreadCount(allMessages));
+function getBuyerDisplayName(user) {
+  if (!user) return '';
+  return [user.firstName, user.lastName].filter(Boolean).join(' ') || user.nickname || user.email;
 }
 
-function shouldShowConversationStatus(conversation) {
-  return !conversation.unreadCount && conversation.lastSender === 'user';
+function isOutgoingMessage(message) {
+  if (!activeConversation) return message.sender === 'user';
+  return getConversationRole(activeConversation) === 'seller'
+    ? message.sender === 'contact'
+    : message.sender === 'user';
+}
+
+function getOutgoingSender() {
+  if (!activeConversation) return 'user';
+  return getConversationRole(activeConversation) === 'seller' ? 'contact' : 'user';
+}
+
+async function loadSellerInbox(products) {
+  const sellerProductIds = new Set(
+    products
+      .filter((product) => Number(product.sellerId) === Number(currentUser.sellerId))
+      .map((product) => Number(product.id))
+  );
+
+  const [allRaw, buyerMessages, users] = await Promise.all([
+    API.getAllMessages(),
+    API.getMessagesByUserId(currentUser.id),
+    API.getUsers()
+  ]);
+  const usersById = new Map(users.map((user) => [user.id, user]));
+  const merged = new Map();
+
+  buyerMessages.forEach((message) => {
+    if (isSelfConversation(message, currentUser)) return;
+    merged.set(message.id, normalizeConversationUnread(message));
+  });
+
+  allRaw
+    .filter((message) => {
+      if (isSelfConversation(message, currentUser)) return false;
+      const matchesSeller = Number(message.sellerId) === Number(currentUser.sellerId);
+      const matchesProduct = sellerProductIds.has(Number(message.productId));
+      return matchesSeller || matchesProduct;
+    })
+    .forEach((message) => {
+      if (merged.has(message.id)) return;
+      merged.set(message.id, {
+        ...normalizeConversationUnread(message),
+        contactName: getBuyerDisplayName(usersById.get(message.userId)) || message.contactName
+      });
+    });
+
+  return [...merged.values()].sort((a, b) => new Date(b.sentAt) - new Date(a.sentAt));
 }
 
 function formatTime(isoString) {
@@ -81,10 +166,82 @@ function getDayKey(isoString) {
 }
 
 function statusIcon(status) {
-  if (status === 'read') {
-    return `<img src="../assets/icons/check-double.svg" alt="" width="18" height="16" aria-hidden="true">`;
+  const isRead = status === 'read';
+  const icon = isRead
+    ? '../assets/icons/check-double.svg'
+    : '../assets/icons/check-single.svg';
+  return `<span class="chat-read-status chat-read-status--${isRead ? 'read' : 'sent'}" title="${isRead ? 'Прочитано' : 'Отправлено'}"><img src="${icon}" alt="" width="${isRead ? 18 : 16}" height="16" aria-hidden="true"></span>`;
+}
+
+function toggleConversationSelection(conversationId) {
+  const id = Number(conversationId);
+  if (!Number.isFinite(id)) return;
+
+  const input = document.querySelector(`[data-message-check][value="${id}"]`);
+
+  if (selectedIds.has(id)) {
+    selectedIds.delete(id);
+    if (input) input.checked = false;
+  } else {
+    selectedIds.add(id);
+    if (input) input.checked = true;
   }
-  return `<img src="../assets/icons/check-single.svg" alt="" width="16" height="16" aria-hidden="true">`;
+
+  updateSelectUi();
+}
+
+async function reloadConversations() {
+  const products = await api.getProducts({ includeInactive: true });
+  productsById = new Map(products.map((product) => [Number(product.id), product]));
+
+  if (isSeller(currentUser)) {
+    allMessages = await loadSellerInbox(products);
+  } else {
+    allMessages = (await API.getMessagesByUserId(currentUser.id))
+      .filter((message) => !isSelfConversation(message, currentUser))
+      .map(normalizeConversationUnread);
+  }
+
+  updateUnreadTabBadge();
+  renderConversationList();
+}
+
+async function deleteSelectedConversations() {
+  if (!selectedIds.size) return;
+
+  const confirmed = await confirmDialog({
+    title: t('messages.delete'),
+    message: t('messages.deleteConfirm'),
+    confirmText: t('messages.delete'),
+    type: 'warning'
+  });
+
+  if (!confirmed) return;
+
+  const ids = [...selectedIds];
+  const hadActiveChat = activeConversation && ids.includes(activeConversation.id);
+
+  try {
+    await Promise.all(ids.map((id) => API.deleteChatMessagesByConversation(id)));
+    await API.deleteMessages(ids);
+
+    if (hadActiveChat) {
+      activeConversation = null;
+      chatMessages = [];
+    }
+
+    selectedIds.clear();
+    selectMode = false;
+
+    await reloadConversations();
+    updateSelectUi();
+
+    if (hadActiveChat) {
+      showEmptyChat();
+    }
+  } catch {
+    alertDialog({ message: t('messages.deleteError'), type: 'error' });
+  }
 }
 
 function updateSelectUi() {
@@ -99,6 +256,15 @@ function updateSelectUi() {
   if (deleteBtn) deleteBtn.disabled = selectedIds.size === 0;
 }
 
+function sortConversations(list) {
+  return [...list].sort((a, b) => {
+    const unreadA = getMyUnread(a) > 0 ? 1 : 0;
+    const unreadB = getMyUnread(b) > 0 ? 1 : 0;
+    if (unreadA !== unreadB) return unreadB - unreadA;
+    return new Date(b.sentAt) - new Date(a.sentAt);
+  });
+}
+
 function renderConversationList() {
   const list = document.getElementById('messenger-list');
   if (!list) return;
@@ -110,13 +276,16 @@ function renderConversationList() {
     return;
   }
 
-  list.innerHTML = allMessages.map((conversation) => {
+  const sorted = sortConversations(allMessages);
+
+  list.innerHTML = sorted.map((conversation) => {
     const isActive = activeConversation?.id === conversation.id;
-    const isUnread = conversation.unreadCount > 0;
+    const unread = getMyUnread(conversation);
+    const isUnread = unread > 0;
     const checked = selectedIds.has(conversation.id);
     const productSrc = assetUrl(conversation.productImage);
     const badge = isUnread
-      ? `<span class="messenger-item__badge">${conversation.unreadCount}</span>`
+      ? `<span class="messenger-item__badge" aria-label="${unread}">${unread}</span>`
       : shouldShowConversationStatus(conversation)
         ? `<span class="messenger-item__status">${statusIcon(conversation.status || 'sent')}</span>`
         : '';
@@ -147,7 +316,12 @@ function renderConversationList() {
               <span class="messenger-item__name">${escapeHtml(conversation.contactName)}</span>
               <span class="messenger-item__time">${escapeHtml(formatListTime(conversation.sentAt))}</span>
             </span>
-            <span class="messenger-item__listing">${escapeHtml(conversation.productTitle)}</span>
+            <span class="messenger-item__listing-row">
+              <span class="messenger-item__listing">${escapeHtml(conversation.productTitle)}</span>
+              ${isConversationListingActive(conversation)
+                ? ''
+                : `<span class="messenger-item__inactive">${escapeHtml(t('messages.listingInactiveBadge'))}</span>`}
+            </span>
             <span class="messenger-item__preview-row">
               <span class="messenger-item__preview">${escapeHtml(conversation.lastMessage || '')}</span>
               ${badge}
@@ -181,7 +355,7 @@ function renderChatMessages() {
       : '';
     lastDayKey = dayKey;
 
-    const isOutgoing = message.sender === 'user';
+    const isOutgoing = isOutgoingMessage(message);
     const meta = `
       <div class="chat-bubble__meta">
         <span class="chat-time">${escapeHtml(formatTime(message.sentAt))}</span>
@@ -216,11 +390,16 @@ function renderChatMessages() {
   body.scrollTop = body.scrollHeight;
 }
 
+function setMessagesChatOpen(isOpen) {
+  document.querySelector('[data-messenger]')?.classList.toggle('is-chat-open', isOpen);
+  document.body.classList.toggle('is-messages-chat-open', isOpen);
+}
+
 function showEmptyChat() {
   activeConversation = null;
   chatMessages = [];
 
-  document.querySelector('[data-messenger]')?.classList.remove('is-chat-open');
+  setMessagesChatOpen(false);
   document.querySelector('[data-chat-empty]')?.removeAttribute('hidden');
   document.querySelector('[data-chat-panel]')?.setAttribute('hidden', '');
 
@@ -231,7 +410,33 @@ function showEmptyChat() {
 }
 
 function getConversationProduct(conversation) {
-  return productsById.get(conversation?.productId) || null;
+  if (!conversation?.productId && conversation?.productId !== 0) return null;
+  return productsById.get(Number(conversation.productId))
+    || productsById.get(conversation.productId)
+    || null;
+}
+
+function isConversationListingActive(conversation) {
+  const product = getConversationProduct(conversation);
+  if (!product) {
+    return false;
+  }
+  return isProductActive(product);
+}
+
+function setComposerLocked(locked) {
+  const form = document.querySelector('[data-chat-form]');
+  const inactive = document.querySelector('[data-chat-inactive]');
+  const input = document.querySelector('[data-chat-input]');
+  const sendBtn = document.querySelector('[data-chat-send]');
+
+  if (form) form.hidden = locked;
+  if (inactive) inactive.hidden = !locked;
+  if (input) {
+    input.disabled = locked;
+    input.placeholder = locked ? t('messages.listingInactiveShort') : t('messages.placeholder');
+  }
+  if (sendBtn) sendBtn.disabled = locked;
 }
 
 function fillChatHeader(conversation) {
@@ -246,36 +451,118 @@ function fillChatHeader(conversation) {
     image.alt = conversation.productTitle || '';
   }
 
+  const listingActive = isConversationListingActive(conversation);
   const productLink = document.querySelector('[data-chat-product]');
   if (productLink) {
-    productLink.href = conversation.productId
-      ? `product.html?id=${encodeURIComponent(conversation.productId)}`
-      : '#';
+    productLink.classList.toggle('is-inactive', !listingActive);
+    if (listingActive && conversation.productId) {
+      productLink.href = `product.html?id=${encodeURIComponent(conversation.productId)}`;
+      productLink.removeAttribute('aria-disabled');
+    } else {
+      productLink.href = '#';
+      productLink.setAttribute('aria-disabled', 'true');
+    }
+  }
+
+  const badge = document.querySelector('[data-chat-product-badge]');
+  if (badge) {
+    if (listingActive) {
+      badge.hidden = true;
+      badge.textContent = '';
+    } else {
+      badge.hidden = false;
+      badge.textContent = t('messages.listingInactiveBadge');
+    }
   }
 
   const product = getConversationProduct(conversation);
   const sellerLink = document.querySelector('[data-chat-seller-link]');
   if (sellerLink) {
-    if (product?.sellerId) {
+    if (getConversationRole(conversation) === 'seller' || !product?.sellerId || !listingActive) {
+      sellerLink.hidden = true;
+      sellerLink.removeAttribute('href');
+    } else {
       sellerLink.href = buildSellerCatalogUrl(product.sellerId, product);
       sellerLink.textContent = t('product.viewSellerAds');
       sellerLink.hidden = false;
-    } else {
-      sellerLink.hidden = true;
-      sellerLink.removeAttribute('href');
     }
+  }
+
+  setComposerLocked(!listingActive);
+}
+
+function patchLocalConversation(conversationId, patch) {
+  const index = allMessages.findIndex((item) => item.id === conversationId);
+  if (index >= 0) {
+    allMessages[index] = normalizeConversationUnread({ ...allMessages[index], ...patch });
+  }
+  if (activeConversation?.id === conversationId) {
+    activeConversation = normalizeConversationUnread({ ...activeConversation, ...patch });
+  }
+}
+
+async function markConversationRead(conversation) {
+  const role = getConversationRole(conversation);
+  const incomingSender = role === 'seller' ? 'user' : 'contact';
+  const myUnread = getMyUnread(conversation);
+  const lastWasIncoming = conversation.lastSender === incomingSender;
+  const needsStatusUpdate = lastWasIncoming && conversation.status !== 'read';
+
+  const pendingIncoming = chatMessages.filter(
+    (item) => item.sender === incomingSender && item.status !== 'read'
+  );
+
+  if (myUnread <= 0 && !needsStatusUpdate && pendingIncoming.length === 0) {
+    return;
+  }
+
+  const normalized = normalizeConversationUnread(conversation);
+  const patch = {
+    buyerUnreadCount: role === 'buyer' ? 0 : Number(normalized.buyerUnreadCount) || 0,
+    sellerUnreadCount: role === 'seller' ? 0 : Number(normalized.sellerUnreadCount) || 0,
+    unreadCount: 0
+  };
+
+  if (needsStatusUpdate) {
+    patch.status = 'read';
+  }
+
+  try {
+    const requests = [];
+
+    if (myUnread > 0 || needsStatusUpdate) {
+      requests.push(API.updateMessage(conversation.id, patch));
+    } else {
+      requests.push(Promise.resolve(conversation));
+    }
+
+    if (pendingIncoming.length) {
+      requests.push(API.markChatMessagesRead(conversation.id, incomingSender));
+    } else {
+      requests.push(Promise.resolve(chatMessages));
+    }
+
+    const [updated, markedMessages] = await Promise.all(requests);
+
+    chatMessages = markedMessages;
+    patchLocalConversation(conversation.id, {
+      ...updated,
+      ...(myUnread > 0 || needsStatusUpdate ? patch : {})
+    });
+  } catch {
   }
 }
 
 async function openConversation(conversation) {
   if (!conversation) return;
 
-  activeConversation = conversation;
-  document.querySelector('[data-messenger]')?.classList.add('is-chat-open');
+  activeConversation = normalizeConversationUnread(conversation);
+  setMessagesChatOpen(true);
   document.querySelector('[data-chat-empty]')?.setAttribute('hidden', '');
   document.querySelector('[data-chat-panel]')?.removeAttribute('hidden');
-  fillChatHeader(conversation);
+  fillChatHeader(activeConversation);
   renderConversationList();
+  window.scrollTo(0, 0);
 
   const url = new URL(window.location.href);
   url.searchParams.set('id', String(conversation.id));
@@ -284,24 +571,24 @@ async function openConversation(conversation) {
   chatMessages = await API.getChatMessages(conversation.id);
   renderChatMessages();
 
-  if (conversation.unreadCount > 0) {
-    try {
-      await API.updateMessage(conversation.id, { unreadCount: 0 });
-      conversation.unreadCount = 0;
-      const index = allMessages.findIndex((item) => item.id === conversation.id);
-      if (index >= 0) allMessages[index].unreadCount = 0;
-      renderConversationList();
-    } catch {
-      /* ignore */
-    }
-  }
+  await markConversationRead(activeConversation);
+  renderChatMessages();
+  renderConversationList();
 
-  document.querySelector('[data-chat-input]')?.focus();
+  if (isConversationListingActive(activeConversation)) {
+    document.querySelector('[data-chat-input]')?.focus();
+  }
 }
 
 async function sendChatMessage(event) {
   event.preventDefault();
   if (!activeConversation) return;
+
+  if (!isConversationListingActive(activeConversation)) {
+    setComposerLocked(true);
+    alertDialog({ message: t('messages.listingInactive'), type: 'error' });
+    return;
+  }
 
   const input = document.querySelector('[data-chat-input]');
   const sendBtn = document.querySelector('[data-chat-send]');
@@ -311,9 +598,19 @@ async function sendChatMessage(event) {
   sendBtn.disabled = true;
 
   try {
+    const outgoing = getOutgoingSender();
+    const role = getConversationRole(activeConversation);
+    const current = normalizeConversationUnread(activeConversation);
+    const nextBuyerUnread = role === 'buyer'
+      ? Number(current.buyerUnreadCount) || 0
+      : (Number(current.buyerUnreadCount) || 0) + 1;
+    const nextSellerUnread = role === 'seller'
+      ? Number(current.sellerUnreadCount) || 0
+      : (Number(current.sellerUnreadCount) || 0) + 1;
+
     const created = await API.createChatMessage({
       conversationId: activeConversation.id,
-      sender: 'user',
+      sender: outgoing,
       text,
       status: 'sent',
       sentAt: new Date().toISOString()
@@ -323,22 +620,27 @@ async function sendChatMessage(event) {
     renderChatMessages();
     input.value = '';
 
-    const updated = await API.updateMessage(activeConversation.id, {
+    const patch = {
       sentAt: created.sentAt,
       lastMessage: text,
-      lastSender: 'user',
-      status: 'sent'
-    });
+      lastSender: outgoing,
+      status: 'sent',
+      buyerUnreadCount: nextBuyerUnread,
+      sellerUnreadCount: nextSellerUnread,
+      unreadCount: 0
+    };
 
-    activeConversation = { ...activeConversation, ...updated };
+    const updated = await API.updateMessage(activeConversation.id, patch);
+
+    activeConversation = normalizeConversationUnread({ ...activeConversation, ...updated, ...patch });
     const index = allMessages.findIndex((item) => item.id === activeConversation.id);
     if (index >= 0) {
-      allMessages[index] = { ...allMessages[index], ...updated };
+      allMessages[index] = { ...allMessages[index], ...activeConversation };
       allMessages.sort((a, b) => new Date(b.sentAt) - new Date(a.sentAt));
     }
     renderConversationList();
   } catch {
-    Modal.showError(t('messages.sendError'));
+    alertDialog({ message: t('messages.sendError'), type: 'error' });
   } finally {
     sendBtn.disabled = false;
     input?.focus();
@@ -349,22 +651,26 @@ async function loadMessages() {
   currentUser = checkAuth();
   if (!currentUser) return;
 
-  if (currentUser.role === 'landlord') {
-    window.location.href = 'landlord-profile.html';
-    return;
-  }
-
-  if (currentUser.role === 'admin') {
+  if (isAdmin(currentUser)) {
     window.location.href = 'admin.html';
     return;
   }
 
-  const [messages, products] = await Promise.all([
-    API.getMessagesByUserId(currentUser.id),
-    api.getProducts()
-  ]);
-  productsById = new Map(products.map((product) => [product.id, product]));
-  allMessages = messages;
+  currentUser = await API.getUserById(currentUser.id);
+  applyProfileTabs();
+
+  const products = await api.getProducts({ includeInactive: true });
+  productsById = new Map(products.map((product) => [Number(product.id), product]));
+
+  if (isSeller(currentUser)) {
+    allMessages = await loadSellerInbox(products);
+  } else {
+    allMessages = (await API.getMessagesByUserId(currentUser.id))
+      .filter((message) => !isSelfConversation(message, currentUser))
+      .map(normalizeConversationUnread);
+  }
+
+  updateUnreadTabBadge();
   renderConversationList();
 
   const conversationId = Number(new URLSearchParams(window.location.search).get('id'));
@@ -399,32 +705,20 @@ function bindEvents() {
     updateSelectUi();
   });
 
-  document.querySelector('[data-messages-delete]')?.addEventListener('click', async () => {
-    if (!selectedIds.size) return;
-
-    try {
-      const ids = [...selectedIds];
-      await Promise.all(ids.map((id) => API.deleteChatMessagesByConversation(id)));
-      await API.deleteMessages(ids);
-      allMessages = allMessages.filter((message) => !selectedIds.has(message.id));
-      selectedIds.clear();
-      selectMode = false;
-
-      if (activeConversation && ids.includes(activeConversation.id)) {
-        showEmptyChat();
-      } else {
-        renderConversationList();
-      }
-    } catch {
-      Modal.showError(t('messages.deleteError'));
-    }
+  document.querySelector('[data-messages-delete]')?.addEventListener('click', () => {
+    deleteSelectedConversations();
   });
 
   document.getElementById('messenger-list')?.addEventListener('click', (event) => {
-    const checkbox = event.target.closest('[data-message-check]');
-    if (checkbox) return;
+    if (event.target.closest('[data-message-check]')) return;
 
-    if (selectMode) return;
+    if (selectMode) {
+      const item = event.target.closest('.messenger-item');
+      if (!item) return;
+      event.preventDefault();
+      toggleConversationSelection(item.dataset.messageId);
+      return;
+    }
 
     const openBtn = event.target.closest('[data-open-chat]');
     if (!openBtn) return;
@@ -435,10 +729,6 @@ function bindEvents() {
 
   document.querySelector('[data-chat-back]')?.addEventListener('click', () => {
     showEmptyChat();
-  });
-
-  document.querySelector('[data-chat-menu]')?.addEventListener('click', () => {
-    Modal.open({ type: 'info', message: t('messages.menuStub') });
   });
 
   document.querySelector('[data-chat-form]')?.addEventListener('submit', sendChatMessage);
