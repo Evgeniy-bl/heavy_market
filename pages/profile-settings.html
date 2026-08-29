@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ru" class="is-preload">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Настройки профиля — Heavy Market</title>
+  <link rel="stylesheet" href="../css/variables.css">
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/accessibility.css">
+  <link rel="stylesheet" href="../css/base.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/layout.css">
+  <link rel="stylesheet" href="../css/preloader.css">
+  <link rel="stylesheet" href="../css/pages/profile.css">
+  <script src="../js/common/theme-switcher.js"></script>
+</head>
+<body data-page="profile-settings">
+
+  <div id="preloader" class="preloader" role="status" aria-live="polite" aria-busy="true">
+    <div class="preloader__inner">
+      <div class="preloader__logo" aria-hidden="true">HEAVY</div>
+      <div class="preloader__spinner" aria-hidden="true"></div>
+      <p class="preloader__text">Загрузка...</p>
+    </div>
+  </div>
+
+  <div data-site-header></div>
+
+  <main class="profile-page profile-page--sub">
+    <section class="profile-hero profile-hero--subpage">
+      <div class="container profile-hero__inner">
+        <div class="profile-mobile-bar">
+          <a href="profile.html" class="profile-mobile-bar__back" data-i18n="listing.back">Назад</a>
+          <h1 class="profile-mobile-bar__title" data-i18n="profile.settingsTitle">Настройки профиля</h1>
+        </div>
+
+        <div class="profile-hero__desktop">
+          <nav class="breadcrumbs profile-hero__breadcrumbs" aria-label="breadcrumb">
+            <a href="../index.html" class="breadcrumbs__item" data-i18n="product.home">Главная</a>
+            <span class="breadcrumbs__sep" aria-hidden="true"></span>
+            <a href="profile.html" class="breadcrumbs__item" data-i18n="profile.cabinet">Мой кабинет</a>
+            <span class="breadcrumbs__sep" aria-hidden="true"></span>
+            <span class="breadcrumbs__item breadcrumbs__item--current" data-i18n="profile.settingsTitle">Настройки профиля</span>
+          </nav>
+          <h1 class="profile-hero__title" data-i18n="profile.settingsTitle">Настройки профиля</h1>
+
+          <nav class="profile-tabs" aria-label="Разделы кабинета">
+            <a href="my-listings.html" class="profile-tabs__link" data-profile-tab-listings hidden data-i18n="profile.myListings">Мои объявления</a>
+            <a href="favorites.html" class="profile-tabs__link" data-profile-tab-favorites data-i18n="profile.favorites">Избранное</a>
+            <a href="messages.html" class="profile-tabs__link profile-tabs__link--messages">
+              <span data-i18n="profile.messages">Сообщения</span>
+              <span class="profile-tabs__badge" data-messages-badge hidden>
+                <span class="profile-tabs__badge-full" data-messages-badge-full></span><span class="profile-tabs__badge-short" data-messages-badge-short></span>
+              </span>
+            </a>
+            <a href="profile-settings.html" class="profile-tabs__link profile-tabs__link--settings is-active" aria-current="page" data-profile-tab-settings data-i18n-aria="profile.settingsTitle">
+              <img class="profile-tabs__icon" src="../assets/icons/settings.svg" alt="" width="24" height="24" aria-hidden="true">
+              <span class="profile-tabs__settings-full" data-i18n="profile.settingsTitle">Настройки профиля</span>
+              <span class="profile-tabs__settings-short" data-i18n="profile.settingsShort">Настройки</span>
+            </a>
+          </nav>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <div class="profile-head">
+        <h2 class="profile-head__title"></h2>
+        <button type="button" class="profile-head__logout" data-profile-logout data-i18n="profile.logout">Выйти из аккаунта</button>
+      </div>
+
+      <section class="profile-card is-open" aria-labelledby="profile-account-title">
+        <button type="button" class="profile-card__toggle" data-profile-toggle aria-expanded="true">
+          <h2 class="profile-card__title" id="profile-account-title" data-i18n="profile.accountSettings">Настройки аккаунта</h2>
+          <span class="profile-card__chevron-wrap" aria-hidden="true">
+            <img class="profile-card__chevron" src="../assets/icons/chevron-down.svg" alt="" width="16" height="8">
+          </span>
+        </button>
+        <div class="profile-card__body">
+          <div class="profile-email-current">
+            <span class="profile-email-current__label" data-i18n="profile.currentEmail">Ваш E-mail адрес:</span>
+            <span class="profile-email-current__value" id="profile-current-email"></span>
+          </div>
+
+          <div class="profile-panels">
+            <div class="profile-panel">
+              <p class="profile-field__subheading" data-i18n="profile.changeEmail">Изменить E-mail адрес</p>
+              <div class="profile-field">
+                <label class="profile-field__label" for="profile-email-input" data-i18n="profile.newEmail">Введите новый E-mail адрес</label>
+                <input class="profile-field__control" type="email" id="profile-email-input" autocomplete="email">
+              </div>
+              <button type="button" class="btn btn--primary profile-card__save" data-save-email data-i18n="profile.save">Сохранить</button>
+            </div>
+            <div class="profile-panel">
+              <p class="profile-field__subheading" data-i18n="profile.changePassword">Изменить пароль</p>
+              <div class="profile-field">
+                <label class="profile-field__label" for="profile-password-input" data-i18n="profile.newPassword">Введите новый пароль</label>
+                <input class="profile-field__control" type="password" id="profile-password-input" autocomplete="new-password">
+              </div>
+              <div class="profile-panel__actions">
+                <button type="button" class="btn btn--primary profile-card__save" data-save-password data-i18n="profile.save">Сохранить</button>
+                <button type="button" class="profile-card__link" data-i18n="auth.login.forgotPassword">Забыли пароль?</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="profile-card is-open" aria-labelledby="profile-contact-title">
+        <button type="button" class="profile-card__toggle" data-profile-toggle aria-expanded="true">
+          <h2 class="profile-card__title" id="profile-contact-title" data-i18n="profile.contactInfo">Изменить контактную информацию</h2>
+          <span class="profile-card__chevron-wrap" aria-hidden="true">
+            <img class="profile-card__chevron" src="../assets/icons/chevron-down.svg" alt="" width="16" height="8">
+          </span>
+        </button>
+        <div class="profile-card__body">
+          <p class="profile-card__hint" data-i18n="profile.contactHint">Здесь вы можете изменить личные данные, которые видят продавцы при обращении.</p>
+
+          <div class="profile-panel profile-panel--contact">
+            <div class="profile-fields-grid profile-fields-grid--contact">
+              <div class="profile-field">
+                <label class="profile-field__label" for="profile-first-name" data-i18n="auth.register.firstName">Имя</label>
+                <input class="profile-field__control" type="text" id="profile-first-name" autocomplete="given-name">
+              </div>
+              <div class="profile-field">
+                <label class="profile-field__label" for="profile-last-name" data-i18n="auth.register.lastName">Фамилия</label>
+                <input class="profile-field__control" type="text" id="profile-last-name" autocomplete="family-name">
+              </div>
+              <div class="profile-field">
+                <label class="profile-field__label" for="profile-phone" data-i18n="auth.register.phone">Телефон</label>
+                <input class="profile-field__control" type="tel" id="profile-phone" autocomplete="tel">
+              </div>
+              <div class="profile-field" id="profile-company-group" hidden>
+                <label class="profile-field__label" for="profile-company-name" data-i18n="auth.register.companyName">Название компании</label>
+                <input class="profile-field__control" type="text" id="profile-company-name" autocomplete="organization">
+              </div>
+            </div>
+
+            <div class="profile-card__actions">
+              <button type="button" class="btn btn--primary profile-card__save" data-save-contact data-i18n="profile.saveChanges">Сохранить изменения</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <div data-site-footer></div>
+
+  <script type="module" src="../js/main.js"></script>
+  <script type="module" src="../js/pages/profile.js"></script>
+</body>
+</html>

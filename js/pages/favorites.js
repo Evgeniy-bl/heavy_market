@@ -3,11 +3,13 @@ import { t } from '../common/i18n.js';
 import { markContentReady } from '../common/preloader.js';
 import { checkAuth } from '../auth/session.js';
 import { refreshMessagesTabBadge } from '../utils/messages-badge.js';
+import { applyProfileTabs } from '../utils/profile-tabs.js';
 import { loadFavoriteIds } from '../utils/favorites.js';
 import { matchesProductQuery } from '../utils/product-search.js';
 import { renderCatalogCards } from '../components/catalog-card.js';
 import { bindFavoriteToggles } from '../components/favorite-button.js';
 import { mountPagination } from '../components/pagination.js';
+import { isAdmin } from '../utils/user-role.js';
 
 const BASE = '../';
 const PAGE_SIZE = 6;
@@ -100,15 +102,14 @@ async function loadFavoritesPage() {
   currentUser = checkAuth();
   if (!currentUser) return;
 
-  if (currentUser.role === 'landlord') {
-    window.location.href = 'landlord-profile.html';
-    return;
-  }
-
-  if (currentUser.role === 'admin') {
+  if (isAdmin(currentUser)) {
     window.location.href = 'admin.html';
     return;
   }
+
+  const { API } = await import('../api.js');
+  currentUser = await API.getUserById(currentUser.id);
+  applyProfileTabs();
 
   const [products, sellers, favorites] = await Promise.all([
     api.getProducts(),
@@ -120,7 +121,7 @@ async function loadFavoritesPage() {
   allSellers = sellers;
   favoriteIds = favorites;
   renderFavorites();
-  await refreshMessagesTabBadge(currentUser.id);
+  await refreshMessagesTabBadge(currentUser);
 }
 
 async function init() {

@@ -1,3 +1,5 @@
+import { PROFILE_DESKTOP_MQ } from '../config/constants.js';
+
 const STORAGE_KEY = 'currentUser';
 
 export function getCurrentUser() {
@@ -9,11 +11,14 @@ export function saveLoginSession(user, remember = false) {
   const session = {
     id: user.id,
     email: user.email,
-    role: user.role,
+    role: user.role || 'user',
     name: [user.firstName, user.lastName].filter(Boolean).join(' '),
     firstName: user.firstName,
     lastName: user.lastName,
-    phone: user.phone
+    phone: user.phone,
+    sellerId: user.sellerId ?? null,
+    sellerType: user.sellerType ?? null,
+    companyName: user.companyName ?? null
   };
   const storage = remember ? localStorage : sessionStorage;
   const other = remember ? sessionStorage : localStorage;
@@ -34,22 +39,23 @@ export function logout() {
   sessionStorage.removeItem(STORAGE_KEY);
 }
 
-export function getRedirectPath(role, inPages = false) {
+export function getRedirectPath(userOrRole, inPages = false) {
   const prefix = inPages ? '' : 'pages/';
-  switch (role) {
-    case 'landlord':
-      return `${prefix}landlord-profile.html`;
-    case 'admin':
-      return `${prefix}admin.html`;
-    case 'renter':
-      return `${prefix}catalog.html`;
-    default:
-      return inPages ? '../index.html' : 'index.html';
+  const role = typeof userOrRole === 'string' ? userOrRole : userOrRole?.role;
+
+  if (role === 'admin') {
+    return `${prefix}admin.html`;
   }
+
+  return `${prefix}catalog.html`;
 }
 
-export function getProfilePath(user, inPages = false) {
-  return getRedirectPath(user?.role === 'landlord' ? 'landlord' : user?.role, inPages).replace('catalog.html', 'profile.html').replace('landlord-profile.html', 'landlord-profile.html');
+export function getProfilePath(user) {
+  if (user?.role === 'admin') return resolveAuthPath('admin.html');
+  if (typeof window !== 'undefined' && window.matchMedia(PROFILE_DESKTOP_MQ).matches) {
+    return resolveAuthPath('profile-settings.html');
+  }
+  return resolveAuthPath('profile.html');
 }
 
 export function resolveAuthPath(filename) {

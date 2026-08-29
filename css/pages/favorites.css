@@ -33,8 +33,4 @@
   .favorites-page__content {
     padding: 24px 0 56px;
   }
-
-  .favorites-grid {
-    grid-template-columns: 1fr;
-  }
 }

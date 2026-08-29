@@ -10,7 +10,9 @@ import {
 } from '../auth/session.js';
 import { formatPhoneInput, phoneToDigits, validateEmailField, validatePasswordField } from '../auth/validation.js';
 import { refreshMessagesTabBadge } from '../utils/messages-badge.js';
-import Modal from '../components/modal.js';
+import { applyProfileTabs } from '../utils/profile-tabs.js';
+import { isAdmin, isSeller, getSellerDisplayName } from '../utils/user-role.js';
+import { alertDialog } from '../components/alert.js';
 
 let currentUser = null;
 
@@ -20,6 +22,7 @@ function formatPhoneDisplay(digits) {
 }
 
 function getDisplayName(user) {
+  if (isSeller(user)) return getSellerDisplayName(user);
   return [user.firstName, user.lastName].filter(Boolean).join(' ') || user.nickname || user.email;
 }
 
@@ -54,25 +57,54 @@ function fillForm(user) {
   if (phoneField) {
     phoneField.value = formatPhoneDisplay(user.phone || '');
   }
+
+  const companyGroup = document.getElementById('profile-company-group');
+  const companyField = document.getElementById('profile-company-name');
+  const hint = document.querySelector('.profile-card__hint');
+  const isCompany = isSeller(user) && user.sellerType === 'company';
+
+  if (companyGroup) {
+    companyGroup.hidden = !isCompany;
+  }
+  if (companyField) {
+    if (isCompany) {
+      companyField.value = user.companyName || '';
+    } else {
+      companyField.value = '';
+    }
+  }
+  if (hint) {
+    hint.dataset.i18n = isSeller(user) ? 'profile.sellerContactHint' : 'profile.contactHint';
+    hint.textContent = t(hint.dataset.i18n);
+  }
+}
+
+async function persistUser(updated) {
+  currentUser = updated;
+  fillForm(updated);
+  applyProfileTabs();
+
+  const remember = Boolean(localStorage.getItem('currentUser'));
+  if (remember) {
+    saveFullUser(updated);
+  } else {
+    saveLoginSession(updated, false);
+  }
 }
 
 async function loadProfile() {
   const session = checkAuth();
   if (!session) return null;
 
-  if (session.role === 'landlord') {
-    window.location.href = 'landlord-profile.html';
-    return null;
-  }
-
-  if (session.role === 'admin') {
+  if (isAdmin(session)) {
     window.location.href = 'admin.html';
     return null;
   }
 
   currentUser = await API.getUserById(session.id);
+  applyProfileTabs();
   fillForm(currentUser);
-  await refreshMessagesTabBadge(currentUser.id);
+  await refreshMessagesTabBadge(currentUser);
   return currentUser;
 }
 
@@ -82,17 +114,8 @@ async function saveEmail() {
 
   const email = input.value.trim();
   const updated = await API.updateUser(currentUser.id, { email });
-  currentUser = updated;
-  document.getElementById('profile-current-email').textContent = updated.email;
-
-  const remember = Boolean(localStorage.getItem('currentUser'));
-  if (remember) {
-    saveFullUser(updated);
-  } else {
-    saveLoginSession(updated, false);
-  }
-
-  Modal.showSuccess(t('profile.saved'));
+  await persistUser(updated);
+  alertDialog({ message: t('profile.saved'), type: 'success' });
 }
 
 async function savePassword() {
@@ -103,7 +126,7 @@ async function savePassword() {
   const updated = await API.updateUser(currentUser.id, { password });
   currentUser = updated;
   input.value = '';
-  Modal.showSuccess(t('profile.saved'));
+  alertDialog({ message: t('profile.saved'), type: 'success' });
 }
 
 async function saveContact() {
@@ -111,29 +134,34 @@ async function saveContact() {
   const lastName = document.getElementById('profile-last-name').value.trim();
   const phoneInput = document.getElementById('profile-phone');
   const phone = phoneInput ? phoneToDigits(phoneInput.value) : currentUser.phone;
+  const companyField = document.getElementById('profile-company-name');
+  const isCompany = isSeller(currentUser) && currentUser.sellerType === 'company';
+  const companyName = isCompany ? companyField?.value.trim() || '' : null;
 
   if (!firstName || !lastName) {
-    Modal.showError(t('validation.required'));
+    alertDialog({ message: t('validation.required'), type: 'error' });
     return;
   }
 
-  const updated = await API.updateUser(currentUser.id, {
-    firstName,
-    lastName,
-    phone
-  });
-
-  currentUser = updated;
-  fillForm(updated);
-
-  const remember = Boolean(localStorage.getItem('currentUser'));
-  if (remember) {
-    saveFullUser(updated);
-  } else {
-    saveLoginSession(updated, false);
+  if (isCompany && !companyName) {
+    alertDialog({ message: t('validation.required'), type: 'error' });
+    return;
   }
 
-  Modal.showSuccess(t('profile.saved'));
+  const patch = { firstName, lastName, phone };
+  if (isCompany) patch.companyName = companyName;
+
+  const updated = await API.updateUser(currentUser.id, patch);
+
+  if (currentUser.sellerId) {
+    await API.updateSeller(currentUser.sellerId, {
+      name: getSellerDisplayName({ ...updated, companyName: companyName ?? updated.companyName }),
+      phone: formatPhoneDisplay(phone)
+    });
+  }
+
+  await persistUser(updated);
+  alertDialog({ message: t('profile.saved'), type: 'success' });
 }
 
 function bindForms() {
@@ -141,7 +169,7 @@ function bindForms() {
     try {
       await saveEmail();
     } catch {
-      Modal.showError(t('profile.saveError'));
+      alertDialog({ message: t('profile.saveError'), type: 'error' });
     }
   });
 
@@ -149,7 +177,7 @@ function bindForms() {
     try {
       await savePassword();
     } catch {
-      Modal.showError(t('profile.saveError'));
+      alertDialog({ message: t('profile.saveError'), type: 'error' });
     }
   });
 
@@ -157,7 +185,7 @@ function bindForms() {
     try {
       await saveContact();
     } catch {
-      Modal.showError(t('profile.saveError'));
+      alertDialog({ message: t('profile.saveError'), type: 'error' });
     }
   });
 
