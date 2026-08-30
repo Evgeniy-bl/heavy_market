@@ -1,12 +1,3 @@
-/**
- * Shared prev/next pagination control.
- * @param {object} options
- * @param {number} options.page - 1-based current page
- * @param {number} options.totalPages
- * @param {string} [options.prevLabel]
- * @param {string} [options.nextLabel]
- * @param {boolean} [options.hideWhenSingle=true]
- */
 export function renderPaginationHtml({
   page,
   totalPages,
@@ -44,10 +35,6 @@ export function renderPaginationHtml({
   `;
 }
 
-/**
- * Renders pagination into container and binds prev/next clicks.
- * @returns {() => void} cleanup
- */
 export function mountPagination(container, options) {
   if (!container) return () => {};
 

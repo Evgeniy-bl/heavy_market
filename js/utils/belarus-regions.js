@@ -1,31 +1,59 @@
-export const BELARUS_REGIONS = [
-  'minsk-city',
-  'brest',
-  'vitebsk',
-  'gomel',
-  'grodno',
-  'minsk',
-  'mogilev'
+export const REGIONS_WITH_CITIES = [
+  { id: 'minsk-city', name: 'г. Минск', cities: ['Минск'] },
+  {
+    id: 'brest',
+    name: 'Брестская область',
+    cities: ['Брест', 'Барановичи', 'Пинск', 'Кобрин', 'Берёза', 'Ивацевичи', 'Лунинец', 'Пружаны', 'Жабинка', 'Ганцевичи', 'Дрогичин', 'Каменец', 'Ляховичи', 'Малорита', 'Столин', 'Микашевичи', 'Белоозёрск']
+  },
+  {
+    id: 'vitebsk',
+    name: 'Витебская область',
+    cities: ['Витебск', 'Орша', 'Новополоцк', 'Полоцк', 'Глубокое', 'Лепель', 'Поставы', 'Браслав', 'Городок', 'Докшицы', 'Дубровно', 'Миоры', 'Сенно', 'Толочин', 'Чашники', 'Шарковщина', 'Новолукомль']
+  },
+  {
+    id: 'gomel',
+    name: 'Гомельская область',
+    cities: ['Гомель', 'Жлобин', 'Мозырь', 'Речица', 'Светлогорск', 'Калинковичи', 'Рогачёв', 'Добруш', 'Житковичи', 'Петриков', 'Ельск', 'Лельчицы', 'Хойники', 'Брагин', 'Лоев', 'Буда-Кошелёво', 'Ветка', 'Чечерск', 'Наровля', 'Туров']
+  },
+  {
+    id: 'grodno',
+    name: 'Гродненская область',
+    cities: ['Гродно', 'Лида', 'Слоним', 'Волковыск', 'Новогрудок', 'Сморгонь', 'Ошмяны', 'Островец', 'Ивье', 'Дятлово', 'Мосты', 'Щучин', 'Зельва', 'Свислочь', 'Вороново', 'Кореличи', 'Мир', 'Большая Берестовица']
+  },
+  {
+    id: 'minsk',
+    name: 'Минская область',
+    cities: ['Борисов', 'Жодино', 'Молодечно', 'Слуцк', 'Солигорск', 'Дзержинск', 'Заславль', 'Фаниполь', 'Смолевичи', 'Логойск', 'Вилейка', 'Воложин', 'Несвиж', 'Клецк', 'Любань', 'Старые Дороги', 'Марьина Горка', 'Узда', 'Червень', 'Мядель', 'Крупки', 'Березино']
+  },
+  {
+    id: 'mogilev',
+    name: 'Могилёвская область',
+    cities: ['Могилёв', 'Бобруйск', 'Горки', 'Осиповичи', 'Кричев', 'Быхов', 'Климовичи', 'Костюковичи', 'Мстиславль', 'Славгород', 'Чериков', 'Шклов', 'Чаусы', 'Дрибин', 'Кличев', 'Кировск', 'Круглое', 'Белыничи', 'Глуск']
+  }
 ];
 
-const CITY_TO_REGION = {
-  'Минск': 'minsk-city',
-  'Жодино': 'minsk',
-  'Борисов': 'minsk',
-  'Солигорск': 'minsk',
-  'Слуцк': 'minsk',
-  'Брест': 'brest',
-  'Пинск': 'brest',
-  'Барановичи': 'brest',
-  'Витебск': 'vitebsk',
-  'Гомель': 'gomel',
-  'Гродно': 'grodno',
-  'Лида': 'grodno',
-  'Могилёв': 'mogilev',
-  'Бобруйск': 'mogilev',
-  'Горки': 'mogilev'
-};
+export const BELARUS_REGIONS = REGIONS_WITH_CITIES.map((region) => region.id);
+
+const CITY_TO_REGION = REGIONS_WITH_CITIES.reduce((map, region) => {
+  region.cities.forEach((city) => {
+    map[city] = region.id;
+  });
+  return map;
+}, {});
+
+export function getAvailableRegions() {
+  return REGIONS_WITH_CITIES;
+}
+
+export function getRegionById(regionId) {
+  return REGIONS_WITH_CITIES.find((region) => region.id === regionId) || null;
+}
+
+export function getCitiesByRegion(regionId) {
+  return getRegionById(regionId)?.cities?.slice() || [];
+}
 
 export function getRegionByCity(city) {
+  if (!city) return null;
   return CITY_TO_REGION[city] || null;
 }

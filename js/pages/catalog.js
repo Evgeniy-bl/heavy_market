@@ -13,6 +13,12 @@ import { getCurrentUser } from '../auth/session.js';
 
 const BASE = '../';
 const PAGE_SIZE = 6;
+const SEGMENT_CATEGORIES = ['transport', 'agriculture', 'construction'];
+const CATEGORY_ICONS = {
+  transport: 'delivery-truck-trailer-svgrepo-com.svg',
+  agriculture: 'tractor-svgrepo-com.svg',
+  construction: 'building-construction-crane-svgrepo-com.svg'
+};
 const SORT_OPTIONS = ['', 'price-asc', 'price-desc', 'year-asc', 'year-desc'];
 const SORT_ITEMS = [
   { value: '', labelKey: 'catalog.sortDefault' },
@@ -988,11 +994,33 @@ function syncSearchInput() {
 }
 
 function updateTabs() {
+  const segmentIndex = SEGMENT_CATEGORIES.indexOf(activeCategory);
+  const segmentTabs = document.querySelector('[data-segment-tabs]');
+  if (segmentTabs && segmentIndex >= 0) {
+    segmentTabs.style.setProperty('--segment-index', String(segmentIndex));
+  }
+
   document.querySelectorAll('[data-category-tab]').forEach((tab) => {
     const isActive = tab.dataset.categoryTab === activeCategory;
     tab.classList.toggle('is-active', isActive);
     tab.setAttribute('aria-selected', String(isActive));
   });
+}
+
+function renderCategoryTabsHtml() {
+  return `
+    <nav class="catalog-tabs" role="tablist" aria-label="${t('header.catalog')}" data-segment-tabs style="--segment-index: 0">
+      <div class="catalog-tabs__segment-thumb" aria-hidden="true"></div>
+      ${SEGMENT_CATEGORIES.map((category) => `
+        <button type="button" class="catalog-tabs__btn" role="tab" data-category-tab="${category}">
+          <span class="catalog-tabs__icon" aria-hidden="true">
+            <img src="${BASE}assets/icons/${CATEGORY_ICONS[category]}" alt="" width="24" height="24">
+          </span>
+          <span class="catalog-tabs__label">${t(`categories.${category}`)}</span>
+        </button>
+      `).join('')}
+    </nav>
+  `;
 }
 
 function renderResults() {
@@ -1048,11 +1076,7 @@ function renderPageShell() {
     </nav>
 
     <div class="catalog-tabs-wrap">
-      <div class="catalog-tabs" role="tablist" aria-label="${t('header.catalog')}">
-        <button type="button" class="catalog-tabs__btn" role="tab" data-category-tab="transport">${t('categories.transport')}</button>
-        <button type="button" class="catalog-tabs__btn" role="tab" data-category-tab="agriculture">${t('categories.agriculture')}</button>
-        <button type="button" class="catalog-tabs__btn" role="tab" data-category-tab="construction">${t('categories.construction')}</button>
-      </div>
+      ${renderCategoryTabsHtml()}
     </div>
 
     <div id="catalog-seller-banner" class="catalog-seller-banner" hidden></div>

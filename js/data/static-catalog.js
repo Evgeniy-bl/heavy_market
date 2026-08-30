@@ -1,6 +1,5 @@
 import { BELARUS_REGIONS } from '../utils/belarus-regions.js';
 
-/** Popular sellers by listing volume on the marketplace (offline snapshot). */
 export const FEATURED_SELLERS = [
   {
     id: 1,
